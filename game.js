@@ -645,6 +645,106 @@ class BossGame {
       };
     }
 
+    // 28. 奶茶店学徒（中期破产+低技术+有资金）
+    if (midDeath && stats.tech < 50 && stats.funds > 10) {
+      return {
+        id: 'milk_tea',
+        title: '奶茶店学徒',
+        emoji: '🧋',
+        description: `你拿着最后的钱开了家奶茶店。取名"老板的眼泪"，招牌饮品叫"资金链断裂冰美式"。没想到年轻人就好这口丧文化，开业第一天排队200米。林小默来捧场，点了杯"程序员猝死特浓"。`
+      };
+    }
+
+    // 29. 相亲节目嘉宾（高声誉+中期破产）
+    if (stats.reputation > 50 && midDeath) {
+      return {
+        id: 'dating_show',
+        title: '相亲节目红人',
+        emoji: '💐',
+        description: `相亲节目组找上门："我们想请一位有故事的成功人士...哦，失败人士也行。" 你在节目上自我介绍："前CEO，现无业。" 女嘉宾全灭灯。但节目播出后你火了，微博热搜："最惨CEO相亲记"。广告收入50万。`
+      };
+    }
+
+    // 30. 保安队长（低声誉+低技术+低人脉）
+    if (stats.reputation < 40 && stats.tech < 40 && stats.connections < 40) {
+      return {
+        id: 'security',
+        title: '保安队长',
+        emoji: '🛡️',
+        description: `你去了以前公司所在大楼当保安。每天看着新入驻的公司搬进搬出，感慨万千。有天新租户问："大哥你以前干什么的？" 你说："我以前是这层楼的CEO。" 对方以为你在吹牛，笑了半天。`
+      };
+    }
+
+    // 31. 编程培训讲师（中高技术+破产）
+    if (stats.tech > 50 && !earlyDeath) {
+      return {
+        id: 'coding_teacher',
+        title: '编程培训讲师',
+        emoji: '👨‍🏫',
+        description: `你去培训机构当了编程老师。学生问："老师你这么厉害为什么不去大厂？" 你沉默了三秒："因为我开过公司。" 学生们肃然起敬。林小默来听了一节课，说："老板，你讲的比我写的好。" 你说："因为我踩过的坑比你写的Bug还多。"`
+      };
+    }
+
+    // 32. 广场舞教父（早期破产+高士气）
+    if (earlyDeath && stats.morale > 40) {
+      return {
+        id: 'square_dance',
+        title: '广场舞教父',
+        emoji: '💃',
+        description: `失业后你每天去公园散步，被广场舞大妈拉入伙。凭借当老板时的组织能力，你三个月统一了全市17支广场舞队。大妈们叫你"总指挥"，逢年过节给你送鸡蛋。赵铁柱说："老板，你终于找到了真正听话的团队。"`
+      };
+    }
+
+    // 33. PPT代做（陈画饼路线）
+    if (principles.legacy < -5 && stats.connections > 30) {
+      return {
+        id: 'ppt_master',
+        title: 'PPT之神',
+        emoji: '📊',
+        description: `陈画饼拉你合伙开了个"PPT代做工作室"。你俩联手，堪称画饼界的天花板。服务报价：普通PPT 500，融资PPT 5000，忽悠投资人专用PPT 50000。月入20万。投资人圈子传开了："被这俩人的PPT骗过的请举手。" 全场举手。`
+      };
+    }
+
+    // 34. 密室逃脱NPC（中期破产+低士气）
+    if (midDeath && stats.morale < 40) {
+      return {
+        id: 'escape_room',
+        title: '密室NPC',
+        emoji: '🔐',
+        description: `你去密室逃脱当了NPC。老板说："你演绝望的老板演得太真实了。" 你说："我没演。" 玩家评价："这个NPC眼神里有真实的痛苦，五星好评。" 三个月后你成了全城最火密室的招牌，台词就一句："公司...倒了..."`
+      };
+    }
+
+    // 35. AI训练师（高技术+低资金）
+    if (stats.tech > 45 && isLowFunds && !earlyDeath) {
+      return {
+        id: 'ai_trainer',
+        title: 'AI训练师',
+        emoji: '🤖',
+        description: `你去给AI公司当数据标注员。标到第三天，AI问你："你觉得这个CEO的决策合理吗？" 你一看案例，是你自己公司的。你含泪标了"不合理"。林小默说："老板，你在训练AI避开你踩过的坑。" 三个月后AI公司上市了，你标注的数据功不可没。`
+      };
+    }
+
+    // 36. 黄牛大佬（高人脉+早期破产）
+    if (stats.connections > 50 && earlyDeath) {
+      return {
+        id: 'scalper',
+        title: '票务大亨',
+        emoji: '🎫',
+        description: `凭借当老板时积累的人脉，你成了圈内最强黄牛。演唱会门票、热门餐厅位、专家号...没有你搞不到的。月入8万。张大炮酸了："当年你要是把这人脉用在公司上..." 你说："那时候我还不懂什么叫刚需。"`
+      };
+    }
+
+    // 37. 宠物殡葬师（后期破产+低士气）
+    if (lateDeath && stats.morale < 35) {
+      return {
+        id: 'pet_funeral',
+        title: '宠物殡葬师',
+        emoji: '🌈',
+        description: `你开了家宠物殡葬店，因为"经历过公司死亡，更懂得告别"。你给每只宠物写悼词，客户感动得稀里哗啦。生意好到排队预约。赵铁柱说："老板，你终于找到了一个不会倒闭的行业。" 你说："因为这个行业的客户永远不会投诉。"`
+      };
+    }
+
     // 默认结局：普通破产
     return {
       id: 'default',
