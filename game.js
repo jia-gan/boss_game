@@ -803,7 +803,7 @@ class BossGame {
       dimensions,
       bossType,
       totalDecisions: this.state.totalDecisions,
-      weeksPlayed: this.state.week,
+      weeksPlayed: Math.min(this.state.week, 12),
       history: this.state.history
     };
   }
