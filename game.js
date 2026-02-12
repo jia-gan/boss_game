@@ -363,10 +363,10 @@ class BossGame {
 
     // 计算辅助变量
     const totalPrinciplesScore = Object.values(principles).reduce((a, b) => a + b, 0);
-    const isHighReputation = stats.reputation > 60;
-    const isHighTech = stats.tech > 60;
-    const isHighMorale = stats.morale > 40;
-    const isHighConnections = stats.connections > 60;
+    const isHighReputation = stats.reputation > 75;
+    const isHighTech = stats.tech > 75;
+    const isHighMorale = stats.morale > 60;
+    const isHighConnections = stats.connections > 75;
     const isLowFunds = stats.funds <= 0;
     const earlyDeath = week <= 4;
     const midDeath = week > 4 && week <= 8;
