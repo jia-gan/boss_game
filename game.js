@@ -50,7 +50,7 @@ class BossGame {
     }
   }
 
-  // ====== 月度连续剧事件选择（动态阶段制）======
+  // ====== 月度连续剧事件选择（纯随机制）======
   pickMonthlySeriesEvent() {
     const currentWeek = this.state.week;
     if (currentWeek > 12) return null;
@@ -59,32 +59,16 @@ class BossGame {
     if (!this.state.usedSeries) this.state.usedSeries = new Set();
     if (Array.isArray(this.state.usedSeries)) this.state.usedSeries = new Set(this.state.usedSeries);
 
-    // 三阶段事件池（模拟公司从初创到成熟的经营节奏）
-    // 早期：团队建设、内部管理（根基期）
-    const earlyPool = ['S001', 'S004', 'S006', 'S008', 'S009', 'S013', 'S016', 'S020', 'S024', 'S025', 'S028'];
-    // 中期：市场竞争、外部挑战（成长期）
-    const midPool = ['S002', 'S003', 'S005', 'S014', 'S017', 'S018', 'S021', 'S022', 'S023', 'S027'];
-    // 后期：战略抉择、生死存亡（关键期）
-    const latePool = ['S007', 'S010', 'S011', 'S012', 'S015', 'S019', 'S026', 'S029', 'S030'];
+    // 全部系列放一个池子，纯随机
+    const allSeries = [
+      'S001', 'S002', 'S003', 'S004', 'S005', 'S006', 'S007', 'S008', 'S009', 'S010',
+      'S011', 'S012', 'S013', 'S014', 'S015', 'S016', 'S017', 'S018', 'S019', 'S020',
+      'S021', 'S022', 'S023', 'S024', 'S025', 'S026', 'S027', 'S028', 'S029', 'S030'
+    ];
 
-    // 根据当前阶段选择事件池
-    let pool;
-    if (currentWeek <= 4) pool = earlyPool;
-    else if (currentWeek <= 8) pool = midPool;
-    else pool = latePool;
-
-    // 过滤已使用的系列
-    let available = pool.filter(id => !this.state.usedSeries.has(id));
-
-    // 如果当前阶段的池子空了，从其他阶段补充
-    if (available.length === 0) {
-      available = [...earlyPool, ...midPool, ...latePool]
-        .filter(id => !this.state.usedSeries.has(id));
-    }
-
+    const available = allSeries.filter(id => !this.state.usedSeries.has(id));
     if (available.length === 0) return null;
 
-    // 随机选择一个系列
     const seriesId = available[Math.floor(Math.random() * available.length)];
     this.state.usedSeries.add(seriesId);
 
@@ -354,7 +338,7 @@ class BossGame {
     return null;
   }
 
-  // ====== 破产结局计算（新增）======
+  // ====== 破产结局计算（候选池随机制）======
   calculateBankruptcyEnding() {
     const stats = this.state.stats;
     const principles = this.state.dalio;
@@ -372,9 +356,9 @@ class BossGame {
     const midDeath = week > 4 && week <= 8;
     const lateDeath = week > 8;
 
-    // === 25个破产结局（按优先级和条件检查）===
+    // === 特殊结局（极端条件，优先触发）===
 
-    // 1. 东山再起（高原则分，最佳结局）
+    // 东山再起（极高原则分，唯一解锁结局）
     if (totalPrinciplesScore > 150) {
       return {
         id: 'comeback',
@@ -385,7 +369,7 @@ class BossGame {
       };
     }
 
-    // 2. 回家继承家业（随机彩蛋，5%概率）
+    // 随机彩蛋（低概率，每次都可能出现）
     if (Math.random() < 0.05) {
       return {
         id: 'rich_kid',
@@ -394,8 +378,6 @@ class BossGame {
         description: `你爸打来电话："儿子，别玩了，回来继承家里的上市公司吧。" 你这才想起来，你家是做房地产的。林小默沉默了："所以...你一直在体验生活？" 投资人哭了："我的2000万..."`
       };
     }
-
-    // 3. 中彩票（随机彩蛋，3%概率）
     if (Math.random() < 0.03) {
       return {
         id: 'lottery',
@@ -405,344 +387,284 @@ class BossGame {
       };
     }
 
-    // 4. 商业导师（高声誉）
+    // === 收集所有符合条件的候选结局 ===
+    const candidates = [];
+
+    // 商业导师（高声誉）
     if (isHighReputation && !earlyDeath) {
-      return {
-        id: 'mentor',
-        title: '商业导师',
-        emoji: '📚',
+      candidates.push({
+        id: 'mentor', title: '商业导师', emoji: '📚',
         description: `公司倒了，但你的故事火了。三家商学院邀请你去当"公司倒闭学"讲师。年薪50万，还不用加班。钱多多酸溜溜地说："早知道一开始就故意倒闭。"`
-      };
+      });
     }
 
-    // 5. 被收购打工人（高技术）
+    // 被收购打工人（高技术）
     if (isHighTech && lateDeath) {
-      return {
-        id: 'acquired',
-        title: '被收购打工人',
-        emoji: '💼',
+      candidates.push({
+        id: 'acquired', title: '被收购打工人', emoji: '💼',
         description: `你的竞对看中了你的技术团队，一口气全员收购。你变成了CTO，工资还涨了。第一天上班，新老板拍你肩膀："感谢你帮我培养了这么好的团队。" 你笑了笑，内心MMP。`
-      };
+      });
     }
 
-    // 6. 咖啡馆老板（高士气但破产）
+    // 咖啡馆老板（高士气但破产）
     if (isHighMorale && isLowFunds) {
-      return {
-        id: 'cafe',
-        title: '咖啡馆老板',
-        emoji: '☕',
+      candidates.push({
+        id: 'cafe', title: '咖啡馆老板', emoji: '☕',
         description: `你用最后的钱在公司楼下开了家咖啡馆，取名"BOSS的第二春"。六个老员工全来了，说"咱们这次不开公司，就好好做咖啡"。刘阿姨回来做蛋糕，林小默兼职修电脑。日子过得竟然还挺滋润。`
-      };
+      });
     }
 
-    // 7. 论坛大V（高透明度）
+    // 论坛大V（高透明度）
     if (principles.transparency > 20) {
-      return {
-        id: 'zhihu',
-        title: '论坛大V',
-        emoji: '✍️',
+      candidates.push({
+        id: 'zhihu', title: '论坛大V', emoji: '✍️',
         description: `你在论坛回答了"公司倒了是什么体验"，获赞10万。出版社找你出书《商业败局：一个BOSS的自我修养》，卖了5万册。印税够你还债的。王美丽说："老板，你的失败比别人的成功还值钱。"`
-      };
+      });
     }
 
-    // 8. 直播带货（高声誉但破产）
+    // 直播带货（高声誉但破产）
     if (isHighReputation && isLowFunds && !earlyDeath) {
-      return {
-        id: 'live_streamer',
-        title: '直播带货一哥',
-        emoji: '📱',
+      candidates.push({
+        id: 'live_streamer', title: '直播带货一哥', emoji: '📱',
         description: `你在短视频平台开了直播间，第一句话："老铁们，我公司倒了，现在带货还债。" 粉丝暴涨到100万，都来看你翻车。一个月后，带货收入20万。陈画饼说："老板，你终于把PPT用对地方了。"`
-      };
+      });
     }
 
-    // 9. 职业老赖（负债严重+低声誉）
+    // 职业老赖（负债严重+低声誉）
     if (isLowFunds && stats.reputation < 20) {
-      return {
-        id: 'runner',
-        title: '职业老赖',
-        emoji: '🏃',
+      candidates.push({
+        id: 'runner', title: '职业老赖', emoji: '🏃',
         description: `你欠了一屁股债，手机号换了三个。某天在地铁上遇到投资人，他追了你两站地。你跑得飞快，边跑边想："当年800米体测就该这么拼。" 钱多多发微信："老板，我在泰国，勿念。"`
-      };
+      });
     }
 
-    // 10. 网红UP主（低士气低声誉）
+    // 网红UP主（低士气低声誉）
     if (stats.morale < 20 && stats.reputation < 30) {
-      return {
-        id: 'uploader',
-        title: '网红UP主',
-        emoji: '🎬',
+      candidates.push({
+        id: 'uploader', title: '网红UP主', emoji: '🎬',
         description: `你在视频平台开了个账号叫"当老板翻车实录"，粉丝200万。第一期视频《我是如何三个月亏掉800万的》播放量破千万。广告收入比开公司赚得还多。林小默说："老板你终于找到了自己的赛道。"`
-      };
+      });
     }
 
-    // 11. 外卖骑手（高技术但破产，反差大）
+    // 外卖骑手（高技术但破产，反差大）
     if (isHighTech && earlyDeath && isLowFunds) {
-      return {
-        id: 'delivery',
-        title: '外卖骑手',
-        emoji: '🛵',
+      candidates.push({
+        id: 'delivery', title: '外卖骑手', emoji: '🛵',
         description: `你穿上外卖骑手服，接到第一单时林小默打来电话："老板，我找到工作了。" 你说："巧了，我也找到工作了。" 三个月后你成了"单王"，月入过万。平台邀请你分享："名校毕业生的送餐心得。"`
-      };
+      });
     }
 
-    // 12. 滴滴司机（有人脉但破产）
+    // 滴滴司机（有人脉但破产）
     if (isHighConnections && isLowFunds) {
-      return {
-        id: 'driver',
-        title: '五星司机',
-        emoji: '🚗',
+      candidates.push({
+        id: 'driver', title: '五星司机', emoji: '🚗',
         description: `你开起了滴滴。第一个乘客上车，你一看："诶？王总？" 对方也愣了："你不是...那个当老板的？" 一路沉默。但你的服务评分5.0，很多老客户点名要你。钱多多："老板，你还是适合做服务业。"`
-      };
+      });
     }
 
-    // 13. 传销讲师（低创意择优分）
+    // 传销讲师（低创意择优分）
     if (principles.meritocracy < -10) {
-      return {
-        id: 'mlm',
-        title: '传销讲师',
-        emoji: '🎪',
+      candidates.push({
+        id: 'mlm', title: '传销讲师', emoji: '🎪',
         description: `陈画饼介绍你去了一家"成功学培训公司"。你的PPT技术让老板眼前一亮，当场升你为首席讲师。课程标题：《如何用一张嘴融到500万》。学员好评如潮，都说"讲得太好了，就是不知道怎么落地。"`
-      };
+      });
     }
 
-    // 14. 出家修行（压力爆表）
+    // 出家修行（压力爆表）
     if (principles.pain < -10) {
-      return {
-        id: 'monk',
-        title: '出家修行',
-        emoji: '🙏',
+      candidates.push({
+        id: 'monk', title: '出家修行', emoji: '🙏',
         description: `在连续经历融资失败、员工跳槽、产品被抄、大客户跑路后，你顿悟了。少林寺的师傅收留了你，法号"释破产"。在寺庙里你负责维护网站，用上了林小默教的代码。网友评论："这庙的网站怎么这么丝滑？"`
-      };
+      });
     }
 
-    // 15. 摆地摊（低资金但高士气）
+    // 摆地摊（低资金但高士气）
     if (isLowFunds && stats.morale > 30 && earlyDeath) {
-      return {
-        id: 'street_vendor',
-        title: '地摊经济',
-        emoji: '🛒',
+      candidates.push({
+        id: 'street_vendor', title: '地摊经济', emoji: '🛒',
         description: `你在夜市摆起了地摊，卖的是"破产纪念T恤"，上面印着"我TM当老板了"。没想到爆火，月入三万。城管大哥都成了你的客户："小伙子有想法，比那些假装高大上的强。"`
-      };
+      });
     }
 
-    // 16. 房产中介（高人脉）
+    // 房产中介（高人脉）
     if (isHighConnections && midDeath) {
-      return {
-        id: 'realtor',
-        title: '金牌中介',
-        emoji: '🏢',
+      candidates.push({
+        id: 'realtor', title: '金牌中介', emoji: '🏢',
         description: `你去房产中介当了经纪人。第一个月，你用之前积累的人脉成交了三套房，提成12万。店长说："我干了十年都没你一个月业绩高。" 你说："我这叫降维打击。"`
-      };
+      });
     }
 
-    // 17. 考公上岸（早期破产，追求稳定）
+    // 考公上岸（早期破产，追求稳定）
     if (earlyDeath && stats.tech < 40) {
-      return {
-        id: 'civil_servant',
-        title: '公务员上岸',
-        emoji: '📋',
+      candidates.push({
+        id: 'civil_servant', title: '公务员上岸', emoji: '📋',
         description: `公司倒了之后，你备考了三个月，成功考上了公务员。父母高兴坏了："早说让你考公，非要当老板。" 同事问你为什么来，你说："体验过山车人生，现在只想要平稳。"`
-      };
+      });
     }
 
-    // 18. 健身教练（高士气）
+    // 健身教练（高士气）
     if (stats.morale > 50 && isLowFunds) {
-      return {
-        id: 'fitness_coach',
-        title: '健身教练',
-        emoji: '💪',
+      candidates.push({
+        id: 'fitness_coach', title: '健身教练', emoji: '💪',
         description: `工作压力让你天天去健身房发泄，没想到练出了一身肌肉。健身房老板看中了你："来当教练吧，月薪2万。" 学员问你为什么这么拼，你说："想到还债就有力气了。"`
-      };
+      });
     }
 
-    // 19. 炒股翻车（想翻本但失败）
-    if (isLowFunds && principles.pain < 0 && Math.random() < 0.4) {
-      return {
-        id: 'stock_gambler',
-        title: '股民',
-        emoji: '📉',
+    // 炒股翻车
+    if (isLowFunds && principles.pain < 0) {
+      candidates.push({
+        id: 'stock_gambler', title: '股民', emoji: '📉',
         description: `你把最后5万投进股市，想着翻本。三个月后，5万变成了8000。你盯着K线图说："这不科学。" 林小默说："老板，开公司亏钱还不够，还要炒股亏？" 你："这叫双倍快乐。"`
-      };
+      });
     }
 
-    // 20. 游戏主播（高技术+早期破产）
+    // 游戏主播（高技术+早期破产）
     if (isHighTech && earlyDeath) {
-      return {
-        id: 'gamer',
-        title: '游戏主播',
-        emoji: '🎮',
+      candidates.push({
+        id: 'gamer', title: '游戏主播', emoji: '🎮',
         description: `你开始在直播平台打游戏，技术好，还会讲段子。三个月后粉丝50万，月收入15万。弹幕刷屏："这是我见过最有文化的游戏主播。" 你说："公司倒了，游戏成功。"`
-      };
+      });
     }
 
-    // 21. 宠物咖啡馆（高士气+中期破产）
+    // 宠物咖啡馆（高士气+中期破产）
     if (isHighMorale && midDeath && stats.reputation > 40) {
-      return {
-        id: 'pet_cafe',
-        title: '猫咖店主',
-        emoji: '🐱',
+      candidates.push({
+        id: 'pet_cafe', title: '猫咖店主', emoji: '🐱',
         description: `你开了家猫咖，取名"BOSS和他的猫"。刘阿姨成了店长，钱多多兼职做账。六只猫都是以前的员工名字。社交平台爆火："最治愈的老板转型故事。" 你说："这次终于不用融资了。"`
-      };
+      });
     }
 
-    // 22. 婚恋顾问（高人脉+高透明度）
+    // 婚恋顾问（高人脉+高透明度）
     if (isHighConnections && principles.transparency > 10) {
-      return {
-        id: 'matchmaker',
-        title: '婚恋顾问',
-        emoji: '💘',
+      candidates.push({
+        id: 'matchmaker', title: '婚恋顾问', emoji: '💘',
         description: `你去了婚介所工作。用当老板时积累的沟通技巧和人脉，成功率高达80%。客户说："你比算命的还准。" 你说："我只是把达利欧的原则用在了相亲上。"`
-      };
+      });
     }
 
-    // 23. 夜市小吃摊（低资金+低技术）
+    // 夜市小吃摊（低资金+低技术）
     if (isLowFunds && stats.tech < 30 && stats.morale > 20) {
-      return {
-        id: 'food_stall',
-        title: '煎饼果子西施',
-        emoji: '🥞',
+      candidates.push({
+        id: 'food_stall', title: '煎饼果子西施', emoji: '🥞',
         description: `你在地铁站卖煎饼果子。手艺是跟刘阿姨学的，每天凌晨4点起床。有前员工路过，默默多加一个蛋。三个月后，你的煎饼果子成了网红，日入2000。钱多多："老板，这才是真正的产品经理。"`
-      };
+      });
     }
 
-    // 24. 风水大师（低机器思维，玄学转型）
+    // 风水大师（低机器思维，玄学转型）
     if (principles.machine < -5 && stats.connections > 40) {
-      return {
-        id: 'feng_shui',
-        title: '风水大师',
-        emoji: '🧿',
+      candidates.push({
+        id: 'feng_shui', title: '风水大师', emoji: '🧿',
         description: `你开始给人看风水。第一个客户是投资人，他说："你当年给我看过BP，现在给我看看风水吧。" 没想到你还挺准。三个月后，你成了圈内红人。陈画饼："老板，你终于找到了更高级的画饼方式。"`
-      };
+      });
     }
 
-    // 25. 自媒体鸡汤写手（中后期破产）
+    // 自媒体鸡汤写手（中后期破产）
     if (lateDeath && stats.reputation > 30) {
-      return {
-        id: 'content_creator',
-        title: '自媒体大V',
-        emoji: '📝',
+      candidates.push({
+        id: 'content_creator', title: '自媒体大V', emoji: '📝',
         description: `你开了个公众号叫"BOSS的商战手札"，记录失败的全过程。没想到10万+频出，广告商找上门。你写道："失败不可怕，可怕的是不敢复盘。" 粉丝留言："终于有人说人话了。"`
-      };
+      });
     }
 
-    // 26. 快递小哥（低声誉+低技术）
+    // 快递小哥（低声誉+低技术）
     if (stats.reputation < 30 && stats.tech < 40 && isLowFunds) {
-      return {
-        id: 'courier',
-        title: '快递小哥',
-        emoji: '📦',
+      candidates.push({
+        id: 'courier', title: '快递小哥', emoji: '📦',
         description: `你去快递公司当了快递员。第一天送件时，收件人是你的前客户。他愣了："你...怎么？" 你说："公司倒了，重新做人。" 三个月后你成了片区劳模："从CEO到快递员的降维打击。"`
-      };
+      });
     }
 
-    // 27. 回前公司上班（中期破产+高技术）
+    // 回前公司上班（中期破产+高技术）
     if (midDeath && isHighTech) {
-      return {
-        id: 'back_to_job',
-        title: '重返职场',
-        emoji: '👔',
+      candidates.push({
+        id: 'back_to_job', title: '重返职场', emoji: '👔',
         description: `前东家HR打来电话："要不要回来？给你总监职位，年薪80万。" 你答应了。第一天上班，前同事问："当老板感觉如何？" 你说："像做了一场梦。醒来发现，还是上班踏实。"`
-      };
+      });
     }
 
-    // 28. 奶茶店学徒（中期破产+低技术+有资金）
+    // 奶茶店学徒（中期破产+低技术+有资金）
     if (midDeath && stats.tech < 50 && stats.funds > 10) {
-      return {
-        id: 'milk_tea',
-        title: '奶茶店学徒',
-        emoji: '🧋',
+      candidates.push({
+        id: 'milk_tea', title: '奶茶店学徒', emoji: '🧋',
         description: `你拿着最后的钱开了家奶茶店。取名"老板的眼泪"，招牌饮品叫"资金链断裂冰美式"。没想到年轻人就好这口丧文化，开业第一天排队200米。林小默来捧场，点了杯"程序员猝死特浓"。`
-      };
+      });
     }
 
-    // 29. 相亲节目嘉宾（高声誉+中期破产）
+    // 相亲节目嘉宾（高声誉+中期破产）
     if (stats.reputation > 50 && midDeath) {
-      return {
-        id: 'dating_show',
-        title: '相亲节目红人',
-        emoji: '💐',
+      candidates.push({
+        id: 'dating_show', title: '相亲节目红人', emoji: '💐',
         description: `相亲节目组找上门："我们想请一位有故事的成功人士...哦，失败人士也行。" 你在节目上自我介绍："前CEO，现无业。" 女嘉宾全灭灯。但节目播出后你火了，微博热搜："最惨CEO相亲记"。广告收入50万。`
-      };
+      });
     }
 
-    // 30. 保安队长（低声誉+低技术+低人脉）
+    // 保安队长（低声誉+低技术+低人脉）
     if (stats.reputation < 40 && stats.tech < 40 && stats.connections < 40) {
-      return {
-        id: 'security',
-        title: '保安队长',
-        emoji: '🛡️',
+      candidates.push({
+        id: 'security', title: '保安队长', emoji: '🛡️',
         description: `你去了以前公司所在大楼当保安。每天看着新入驻的公司搬进搬出，感慨万千。有天新租户问："大哥你以前干什么的？" 你说："我以前是这层楼的CEO。" 对方以为你在吹牛，笑了半天。`
-      };
+      });
     }
 
-    // 31. 编程培训讲师（中高技术+破产）
+    // 编程培训讲师（中高技术+破产）
     if (stats.tech > 50 && !earlyDeath) {
-      return {
-        id: 'coding_teacher',
-        title: '编程培训讲师',
-        emoji: '👨‍🏫',
+      candidates.push({
+        id: 'coding_teacher', title: '编程培训讲师', emoji: '👨‍🏫',
         description: `你去培训机构当了编程老师。学生问："老师你这么厉害为什么不去大厂？" 你沉默了三秒："因为我开过公司。" 学生们肃然起敬。林小默来听了一节课，说："老板，你讲的比我写的好。" 你说："因为我踩过的坑比你写的Bug还多。"`
-      };
+      });
     }
 
-    // 32. 广场舞教父（早期破产+高士气）
+    // 广场舞教父（早期破产+高士气）
     if (earlyDeath && stats.morale > 40) {
-      return {
-        id: 'square_dance',
-        title: '广场舞教父',
-        emoji: '💃',
+      candidates.push({
+        id: 'square_dance', title: '广场舞教父', emoji: '💃',
         description: `失业后你每天去公园散步，被广场舞大妈拉入伙。凭借当老板时的组织能力，你三个月统一了全市17支广场舞队。大妈们叫你"总指挥"，逢年过节给你送鸡蛋。赵铁柱说："老板，你终于找到了真正听话的团队。"`
-      };
+      });
     }
 
-    // 33. PPT代做（陈画饼路线）
+    // PPT代做（陈画饼路线）
     if (principles.legacy < -5 && stats.connections > 30) {
-      return {
-        id: 'ppt_master',
-        title: 'PPT之神',
-        emoji: '📊',
+      candidates.push({
+        id: 'ppt_master', title: 'PPT之神', emoji: '📊',
         description: `陈画饼拉你合伙开了个"PPT代做工作室"。你俩联手，堪称画饼界的天花板。服务报价：普通PPT 500，融资PPT 5000，忽悠投资人专用PPT 50000。月入20万。投资人圈子传开了："被这俩人的PPT骗过的请举手。" 全场举手。`
-      };
+      });
     }
 
-    // 34. 密室逃脱NPC（中期破产+低士气）
+    // 密室逃脱NPC（中期破产+低士气）
     if (midDeath && stats.morale < 40) {
-      return {
-        id: 'escape_room',
-        title: '密室NPC',
-        emoji: '🔐',
+      candidates.push({
+        id: 'escape_room', title: '密室NPC', emoji: '🔐',
         description: `你去密室逃脱当了NPC。老板说："你演绝望的老板演得太真实了。" 你说："我没演。" 玩家评价："这个NPC眼神里有真实的痛苦，五星好评。" 三个月后你成了全城最火密室的招牌，台词就一句："公司...倒了..."`
-      };
+      });
     }
 
-    // 35. AI训练师（高技术+低资金）
+    // AI训练师（高技术+低资金）
     if (stats.tech > 45 && isLowFunds && !earlyDeath) {
-      return {
-        id: 'ai_trainer',
-        title: 'AI训练师',
-        emoji: '🤖',
+      candidates.push({
+        id: 'ai_trainer', title: 'AI训练师', emoji: '🤖',
         description: `你去给AI公司当数据标注员。标到第三天，AI问你："你觉得这个CEO的决策合理吗？" 你一看案例，是你自己公司的。你含泪标了"不合理"。林小默说："老板，你在训练AI避开你踩过的坑。" 三个月后AI公司上市了，你标注的数据功不可没。`
-      };
+      });
     }
 
-    // 36. 黄牛大佬（高人脉+早期破产）
+    // 黄牛大佬（高人脉+早期破产）
     if (stats.connections > 50 && earlyDeath) {
-      return {
-        id: 'scalper',
-        title: '票务大亨',
-        emoji: '🎫',
+      candidates.push({
+        id: 'scalper', title: '票务大亨', emoji: '🎫',
         description: `凭借当老板时积累的人脉，你成了圈内最强黄牛。演唱会门票、热门餐厅位、专家号...没有你搞不到的。月入8万。张大炮酸了："当年你要是把这人脉用在公司上..." 你说："那时候我还不懂什么叫刚需。"`
-      };
+      });
     }
 
-    // 37. 宠物殡葬师（后期破产+低士气）
+    // 宠物殡葬师（后期破产+低士气）
     if (lateDeath && stats.morale < 35) {
-      return {
-        id: 'pet_funeral',
-        title: '宠物殡葬师',
-        emoji: '🌈',
+      candidates.push({
+        id: 'pet_funeral', title: '宠物殡葬师', emoji: '🌈',
         description: `你开了家宠物殡葬店，因为"经历过公司死亡，更懂得告别"。你给每只宠物写悼词，客户感动得稀里哗啦。生意好到排队预约。赵铁柱说："老板，你终于找到了一个不会倒闭的行业。" 你说："因为这个行业的客户永远不会投诉。"`
-      };
+      });
+    }
+
+    // 从候选池中随机选择
+    if (candidates.length > 0) {
+      return candidates[Math.floor(Math.random() * candidates.length)];
     }
 
     // 默认结局：普通破产
@@ -812,133 +734,100 @@ class BossGame {
     const isHighPrinciples = totalPrinciples > 100;
     const isBalanced = Math.max(...Object.values(stats)) - Math.min(...Object.values(stats)) < 20;
 
-    // === 10个不同的胜利结局 ===
+    // === 按tier收集候选结局 ===
+    const perfectCandidates = [];
+    const goodCandidates = [];
+    const surviveCandidates = [];
 
-    // 1. 完美传奇（全属性>80，最高成就）
+    // perfect tier
     if (allAbove80 && isHighPrinciples) {
-      return {
-        title: '达利欧的继承人',
-        subtitle: '完美通关 · 传奇',
+      perfectCandidates.push({
+        title: '达利欧的继承人', subtitle: '完美通关 · 传奇',
         description: '12个月，你不仅让公司活下来，还创造了奇迹。所有指标爆表，团队上下一心，达利欧本人打来电话："你比我年轻时做得更好。" 各路资本抢着投资，估值直奔独角兽。\n\n这不是结局，是传奇的开始。',
-        emoji: '🌟',
-        tier: 'perfect'
-      };
+        emoji: '🌟', tier: 'perfect'
+      });
     }
-
-    // 2. 完美CEO（全属性>80）
     if (allAbove80) {
-      return {
-        title: '年度最佳CEO',
-        subtitle: '完美通关',
+      perfectCandidates.push({
+        title: '年度最佳CEO', subtitle: '完美通关',
         description: '一年时间，你把公司带到了巅峰。资金充足、士气高涨、口碑爆棚、技术领先、人脉广泛。《财富》杂志要给你做封面，标题是："新一代老板典范"。\n\n员工说："跟着你，值了。"',
-        emoji: '👑',
-        tier: 'perfect'
-      };
+        emoji: '👑', tier: 'perfect'
+      });
     }
 
-    // 3. 人民的好老板（士气>85）
+    // good tier
     if (isLovelyBoss && allAbove70) {
-      return {
-        id: 'beloved_boss',
-        title: '最受爱戴的老板',
-        subtitle: '优秀通关 · 人心',
+      goodCandidates.push({
+        id: 'beloved_boss', title: '最受爱戴的老板', subtitle: '优秀通关 · 人心',
         description: '你可能不是最有钱的老板，但绝对是员工最爱的老板。年会上，林小默哭着说："这辈子能遇到这样的老板，是我的幸运。" 全员鼓掌，刘阿姨也哭了。\n\n《人物》杂志专访："他把员工当家人。"',
-        emoji: '❤️',
-        tier: 'good'
-      };
+        emoji: '❤️', tier: 'good'
+      });
     }
-
-    // 4. 技术大神（技术>85）
     if (isTechGod && allAbove70) {
-      return {
-        id: 'tech_legend',
-        title: '技术驱动的胜利',
-        subtitle: '优秀通关 · 创新',
+      goodCandidates.push({
+        id: 'tech_legend', title: '技术驱动的胜利', subtitle: '优秀通关 · 创新',
         description: '你用技术碾压了所有竞争对手。产品被称为"行业标杆"，开源项目10万star。三家头部公司想收购技术团队，你全拒了。\n\n业内大佬评价："Impressive work."',
-        emoji: '🚀',
-        tier: 'good'
-      };
+        emoji: '🚀', tier: 'good'
+      });
     }
-
-    // 5. 业界传奇（声誉>85）
     if (isFamous && allAbove70) {
-      return {
-        id: 'reputation_king',
-        title: '业界口碑王',
-        subtitle: '优秀通关 · 声誉',
+      goodCandidates.push({
+        id: 'reputation_king', title: '业界口碑王', subtitle: '优秀通关 · 声誉',
         description: '你的名字成了行业的金字招牌。演讲邀约接到手软，年度人物，百万粉丝。客户说："只要是你们公司的产品，闭眼入。"\n\n声誉就是最好的护城河。',
-        emoji: '📣',
-        tier: 'good'
-      };
+        emoji: '📣', tier: 'good'
+      });
     }
-
-    // 6. 资本高手（资金>90）
     if (isRichAF && allAbove70) {
-      return {
-        id: 'cash_king',
-        title: '现金流之王',
-        subtitle: '优秀通关 · 财务',
+      goodCandidates.push({
+        id: 'cash_king', title: '现金流之王', subtitle: '优秀通关 · 财务',
         description: '账上趴着几百万现金，每个月都在盈利。CFO钱多多说："老板，我们的现金流健康到可以写教科书了。" 投资人说："你是我见过最会算账的老板。"\n\n稳健才是王道。',
-        emoji: '💰',
-        tier: 'good'
-      };
+        emoji: '💰', tier: 'good'
+      });
     }
-
-    // 7. 人脉大师（人脉>85+平衡发展）
     if (isWellConnected && isBalanced && allAbove60) {
-      return {
-        id: 'network_master',
-        title: '人脉通天',
-        subtitle: '优秀通关 · 资源',
+      goodCandidates.push({
+        id: 'network_master', title: '人脉通天', subtitle: '优秀通关 · 资源',
         description: '你的通讯录成了最值钱的资产。投资人、客户、供应商、媒体、政府...各方资源应有尽有。有人说："他一个电话，能搞定别人搞不定的事。"\n\n资源整合才是最高级的能力。',
-        emoji: '🤝',
-        tier: 'good'
-      };
+        emoji: '🤝', tier: 'good'
+      });
     }
-
-    // 8. 达利欧信徒（高原则分+稳健通关）
     if (isHighPrinciples && allAbove50) {
-      return {
-        id: 'principle_master',
-        title: '原则践行者',
-        subtitle: '稳健通关 · 智慧',
+      goodCandidates.push({
+        id: 'principle_master', title: '原则践行者', subtitle: '稳健通关 · 智慧',
         description: '你可能不是最成功的，但绝对是最有原则的。极度透明、创意择优、拥抱痛苦...达利欧的每一条你都实践了。公司文化成了行业标杆。\n\n《原则》续集想采访你当案例。',
-        emoji: '📚',
-        tier: 'good'
-      };
+        emoji: '📚', tier: 'good'
+      });
     }
-
-    // 9. 平衡大师（所有属性差距<20，全面发展）
     if (isBalanced && allAbove50) {
-      return {
-        id: 'balanced',
-        title: '全面发展',
-        subtitle: '稳健通关 · 平衡',
+      goodCandidates.push({
+        id: 'balanced', title: '全面发展', subtitle: '稳健通关 · 平衡',
         description: '你没有明显的短板，也没有特别突出的长板，但这恰恰是最难的。资金、士气、声誉、技术、人脉样样不落。这才是真正的企业家。\n\n平衡就是最高级的艺术。',
-        emoji: '⚖️',
-        tier: 'good'
-      };
+        emoji: '⚖️', tier: 'good'
+      });
     }
 
-    // 10. 幸存者（勉强通关，所有属性>20）
+    // survive tier
     if (allAbove20) {
-      return {
-        title: '劫后余生',
-        subtitle: '勉强通关',
+      surviveCandidates.push({
+        title: '劫后余生', subtitle: '勉强通关',
         description: '你活下来了。虽然公司摇摇欲坠，各项指标都在及格线边缘，但至少还活着。圈子里有个词叫"僵尸企业"，但僵尸也是有生命的。\n\n能活着，就有希望。',
-        emoji: '🧟',
-        tier: 'survive'
-      };
+        emoji: '🧟', tier: 'survive'
+      });
     }
-
-    // 默认兜底结局（极限生存）
-    return {
-      title: '极限生存',
-      subtitle: '惊险通关',
+    surviveCandidates.push({
+      title: '极限生存', subtitle: '惊险通关',
       description: '你几乎是爬着冲过终点线的。至少有一项指标濒临崩溃，公司随时可能倒闭，但你硬是咬牙撑到了第12个月。\n\n这不是成功，这是求生欲。但在这条路上，活下来本身就是奇迹。',
-      emoji: '🔥',
-      tier: 'survive'
-    };
+      emoji: '🔥', tier: 'survive'
+    });
+
+    // 按最高tier返回随机结局
+    if (perfectCandidates.length > 0) {
+      return perfectCandidates[Math.floor(Math.random() * perfectCandidates.length)];
+    }
+    if (goodCandidates.length > 0) {
+      return goodCandidates[Math.floor(Math.random() * goodCandidates.length)];
+    }
+    return surviveCandidates[Math.floor(Math.random() * surviveCandidates.length)];
   }
 
   // ====== 达利欧评估报告 ======

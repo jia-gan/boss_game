@@ -1556,7 +1556,7 @@ const EVENTS = [
     choices: [
       {
         text: '主动加薪，先发制人',
-        effects: { funds: -15, morale: +10, reputation: 0, tech: 0, connections: 0 },
+        effects: { funds: -10, morale: +10, reputation: 0, tech: 0, connections: 0 },
         principles: { transparency: 0, talent: +1, machine: 0, meritocracy: 0, pain: 0, legacy: 0 },
         message: '你给核心员工集体涨薪30%。林小默很惊讶，王美丽红着眼说："老板，你怎么知道？" 竞对HR气得摔了电话。',
         nextChapter: { eventId: 'E051', delay: 0, stateFlags: { action: 'raise', team_loyalty: 'high' }}
@@ -1623,7 +1623,7 @@ const EVENTS = [
     choices: [
       {
         text: '也改成免费，用补贴抢用户',
-        effects: { funds: -20, morale: 0, reputation: +5, tech: 0, connections: +5 },
+        effects: { funds: -12, morale: 0, reputation: +5, tech: 0, connections: +5 },
         principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
         message: '你宣布免费策略。用户回来了，但收入没了。钱多多看着账本说："咱们还能撑4个月。" 烧钱大战开始了。',
         nextChapter: { eventId: 'E053', delay: 0, stateFlags: { strategy: 'free', cashburn: 'high' }}
@@ -1793,14 +1793,14 @@ const EVENTS = [
     choices: [
       {
         text: '大幅削减成本，活下来最重要',
-        effects: { funds: +7, morale: -15, reputation: -5, tech: 0, connections: 0 },
+        effects: { funds: +7, morale: -10, reputation: -3, tech: 0, connections: 0 },
         principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: +2, legacy: 0 },
         message: '你裁掉了30%的员工，砍掉了所有非核心业务，取消了办公室零食。公司活下来了，但士气跌到谷底。',
         nextChapter: { eventId: 'E058', delay: 0, stateFlags: { strategy: 'cut_cost', morale: 'low' }}
       },
       {
         text: '逆势加大投入，抢占市场份额',
-        effects: { funds: -25, morale: +5, reputation: +10, tech: 0, connections: +10 },
+        effects: { funds: -12, morale: +5, reputation: +10, tech: 0, connections: +10 },
         principles: { transparency: +1, talent: 0, machine: +1, meritocracy: 0, pain: +3, legacy: +1 },
         message: '你反其道而行之，加大市场投放，降价抢客户。钱烧得很快，但市场份额在增长。投资人说你"疯了"，但也有人说你"有魄力"。',
         nextChapter: { eventId: 'E058', delay: 0, stateFlags: { strategy: 'aggressive', cashburn: 'very_high' }}
@@ -2070,7 +2070,7 @@ const EVENTS = [
     choices: [
       {
         text: '立刻裁员30%，断臂求生',
-        effects: { funds: +7, morale: -20, reputation: -10, tech: -10, connections: -5 },
+        effects: { funds: +7, morale: -12, reputation: -5, tech: -5, connections: -3 },
         principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: +3, legacy: 0 },
         message: '你连夜拟定了裁员名单。第二天宣布时，办公室一片死寂。被裁的人哭了，留下的人也哭了。钱是省了，但心散了。',
         nextChapter: { eventId: 'E066', delay: 0, stateFlags: { action: 'layoff', team_damage: 'severe' }}
@@ -2213,14 +2213,14 @@ const EVENTS = [
     choices: [
       {
         text: 'All-in AI，押注大模型应用',
-        effects: { funds: -20, morale: +5, reputation: +10, tech: +15, connections: +5 },
+        effects: { funds: -12, morale: +5, reputation: +10, tech: +15, connections: +5 },
         principles: { transparency: +1, talent: +1, machine: +3, meritocracy: 0, pain: +2, legacy: +2 },
         message: '你决定转型AI。林小默兴奋地组建了AI团队，三个月后发布了第一个大模型应用。市场反应不错，但烧钱速度也很快。',
         nextChapter: { eventId: 'E070', delay: 0, stateFlags: { direction: 'ai', risk: 'high', potential: 'huge' }}
       },
       {
         text: '出海东南亚，寻找增量市场',
-        effects: { funds: -15, morale: 0, reputation: 0, tech: 0, connections: +15 },
+        effects: { funds: -10, morale: 0, reputation: 0, tech: 0, connections: +12 },
         principles: { transparency: 0, talent: 0, machine: +1, meritocracy: 0, pain: +2, legacy: +1 },
         message: '你决定出海。王美丽带团队去了越南、泰国考察，三个月后在新加坡设立了办公室。文化差异很大，但市场空间确实大。',
         nextChapter: { eventId: 'E070', delay: 0, stateFlags: { direction: 'overseas', risk: 'medium', potential: 'medium' }}
@@ -2449,14 +2449,14 @@ const EVENTS = [
     choices: [
       {
         text: '报警，绝不向黑客妥协',
-        effects: { funds: -10, morale: -5, reputation: +8, tech: -5, connections: +5 },
+        effects: { funds: -5, morale: -3, reputation: +8, tech: -3, connections: +5 },
         principles: { transparency: +3, talent: 0, machine: 0, meritocracy: 0, pain: +3, legacy: +2 },
         message: '你报警了。警方立案，但说破案周期可能很长。数据暂时找不回来，三个大客户威胁终止合同。但媒体报道你"有骨气"。',
         nextChapter: { eventId: 'E077', delay: 0, stateFlags: { action: 'police', data_lost: true }}
       },
       {
         text: '付赎金，先拿回数据再说',
-        effects: { funds: -20, morale: 0, reputation: -8, tech: 0, connections: 0 },
+        effects: { funds: -12, morale: 0, reputation: -5, tech: 0, connections: 0 },
         principles: { transparency: -2, talent: 0, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
         message: '你凑了300万打了过去。24小时后，数据真的恢复了。但消息泄露出去，圈内人说你"软弱"，更多黑客盯上了你。',
         nextChapter: { eventId: 'E077', delay: 0, stateFlags: { action: 'ransom', data_recovered: true }}
@@ -2726,7 +2726,7 @@ const EVENTS = [
     choices: [
       {
         text: '找关系，希望大事化小',
-        effects: { funds: -13, morale: 0, reputation: -10, tech: 0, connections: +5 },
+        effects: { funds: -8, morale: 0, reputation: -5, tech: 0, connections: +5 },
         principles: { transparency: -3, talent: 0, machine: 0, meritocracy: 0, pain: -2, legacy: -2 },
         message: '你托人情花了20万"摆平"。问题是解决了，但你知道这是个无底洞。钱多多说："老板，下次他们还会来的。" 果然，三个月后又来了。',
         nextChapter: { eventId: 'E085', delay: 0, stateFlags: { approach: 'bribe', vicious_cycle: true }}
@@ -2740,7 +2740,7 @@ const EVENTS = [
       },
       {
         text: '据理力争，投诉过度执法',
-        effects: { funds: -3, morale: 0, reputation: -5, tech: 0, connections: -10 },
+        effects: { funds: -3, morale: +3, reputation: -3, tech: 0, connections: -5 },
         principles: { transparency: +1, talent: 0, machine: 0, meritocracy: +1, pain: +2, legacy: 0 },
         message: '你查了法条，发现有几条根本站不住脚，写了投诉信。上级部门确实撤销了两条，但你得罪了基层执法者。半年后各种检查频繁，你后悔了。',
         nextChapter: { eventId: 'E085', delay: 0, stateFlags: { approach: 'fight', relations_bad: true }}
@@ -3130,7 +3130,7 @@ const EVENTS = [
     choices: [
       {
         text: '全面拥抱AI，大幅裁员提效',
-        effects: { funds: +15, morale: -20, reputation: -5, tech: +10, connections: 0 },
+        effects: { funds: +15, morale: -12, reputation: -5, tech: +10, connections: 0 },
         principles: { transparency: -1, talent: -2, machine: +2, meritocracy: 0, pain: -2, legacy: -1 },
         message: '你宣布用AI替代50%的工作。办公室哭声一片。陈画饼收拾东西时说："我被一个没有感情的机器淘汰了。" 赵铁柱问："老板，AI能替我加班吗？"',
         nextChapter: { eventId: 'E097', delay: 0, stateFlags: { approach: 'replace', morale_hit: true }}
@@ -3197,7 +3197,7 @@ const EVENTS = [
     choices: [
       {
         text: '开除小刘，杀鸡儆猴',
-        effects: { funds: 0, morale: -15, reputation: -10, tech: 0, connections: 0 },
+        effects: { funds: 0, morale: -10, reputation: -8, tech: 0, connections: 0 },
         principles: { transparency: -3, talent: -2, machine: 0, meritocracy: -1, pain: -2, legacy: -1 },
         message: '你当天就开了小刘。小刘含泪发了第二条视频《我因为发视频被开除了》，播放量2000万。#XX公司压榨员工#上了热搜。王美丽："老板...这波我们输麻了。"',
         nextChapter: { eventId: 'E099', delay: 0, stateFlags: { action: 'fire', pr_crisis: true }}
@@ -3264,7 +3264,7 @@ const EVENTS = [
     choices: [
       {
         text: '批准！豪华团建，预算不设限',
-        effects: { funds: -15, morale: +5, reputation: 0, tech: 0, connections: 0 },
+        effects: { funds: -10, morale: +8, reputation: 0, tech: 0, connections: 0 },
         principles: { transparency: 0, talent: +1, machine: 0, meritocracy: 0, pain: 0, legacy: 0 },
         message: '你大手一挥："团建嘛，开心最重要！" 钱多多肉疼得眼角抽搐。出发那天大家倒是挺开心，直到大巴在山路上抛锚了...',
         nextChapter: { eventId: 'E101', delay: 0, stateFlags: { budget: 'unlimited', disaster_level: 'high' }}
@@ -3599,7 +3599,7 @@ const EVENTS = [
     choices: [
       {
         text: '暴怒！全员扣工资',
-        effects: { funds: +5, morale: -20, reputation: 0, tech: 0, connections: 0 },
+        effects: { funds: +5, morale: -12, reputation: 0, tech: 0, connections: 0 },
         principles: { transparency: +1, talent: -1, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
         message: '你拍了桌子："上班时间不干活，工资还想要？全员扣20%！" 办公室鸦雀无声。当天下午所有人都在工作，但效率奇低——因为他们在带薪生气。',
         nextChapter: { eventId: 'E111', delay: 0, stateFlags: { reaction: 'punish', atmosphere: 'toxic' }}
