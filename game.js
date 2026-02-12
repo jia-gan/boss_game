@@ -302,34 +302,6 @@ class BossGame {
     }
   }
 
-  // ====== 季度考核 ======
-  doQuarterlyReview(quarterIndex) {
-    const review = QUARTERLY_REVIEWS[quarterIndex];
-    const totalStats = Object.values(this.state.stats).reduce((a, b) => a + b, 0);
-
-    let result = review.thresholds[review.thresholds.length - 1]; // 默认最低档
-    for (const t of review.thresholds) {
-      if (totalStats >= t.min) {
-        result = t;
-        break;
-      }
-    }
-
-    // 应用效果（上限100）
-    for (const [key, val] of Object.entries(result.effects)) {
-      if (val !== 0) {
-        this.state.stats[key] = Math.max(0, Math.min(100, this.state.stats[key] + val));
-      }
-    }
-
-    this.ui.showQuarterlyReview(review.title, result.message, totalStats, () => {
-      this.state.week++;
-      this.save();
-      this.ui.updateDashboard(this.state);
-      this.startWeek();
-    });
-  }
-
   // ====== 游戏结束判定 ======
   checkGameOver() {
     for (const [key, val] of Object.entries(this.state.stats)) {
@@ -342,7 +314,6 @@ class BossGame {
   calculateBankruptcyEnding() {
     const stats = this.state.stats;
     const principles = this.state.dalio;
-    const history = this.state.history;
     const week = this.state.week;
 
     // 计算辅助变量
@@ -674,42 +645,6 @@ class BossGame {
       emoji: '💔',
       description: `公司关了，但这只是一次尝试。你学到了很多，经历了很多。有人说："失败是成功之母。" 你说："那我这次算是生了个孩子。" \n\n当老板不易，江湖再见！`
     };
-  }
-
-  getFailEnding(stat) {
-    const endings = {
-      funds: {
-        title: '破产清算',
-        subtitle: '资金链断裂',
-        description: '公司破产了。你在地铁站卖煎饼果子，偶尔有前员工路过，默默多加一个蛋。',
-        emoji: '💸'
-      },
-      morale: {
-        title: '全员出走',
-        subtitle: '人心散了',
-        description: '全员离职。办公室只剩你和前台的仙人掌——等等，仙人掌也死了。你一个人坐在空荡荡的工位上，电脑屏保是全员合影。',
-        emoji: '🚪'
-      },
-      reputation: {
-        title: '社会性死亡',
-        subtitle: '声名狼藉',
-        description: '公司喜提热搜，但不是好的那种。你的名字变成了行业反面教材，圈子里的"如何不做CEO"讲座第一课。',
-        emoji: '📱'
-      },
-      tech: {
-        title: '技术崩盘',
-        subtitle: '回到石器时代',
-        description: '系统全面崩溃，数据全丢。你被迫回到手写Excel的时代。客户打来电话时，你在用算盘对账。',
-        emoji: '🔧'
-      },
-      connections: {
-        title: '众叛亲离',
-        subtitle: '无人接听',
-        description: '所有合作伙伴拉黑了你，投资人不回消息，连外卖小哥都绕着公司走。你打开手机通讯录，发现除了10086，没有一个能打的电话。',
-        emoji: '📵'
-      }
-    };
-    return endings[stat] || endings.funds;
   }
 
   getWinEnding() {

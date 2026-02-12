@@ -150,7 +150,7 @@ class GameUI {
   // ====== 事件显示 ======
   showEvent(event, isChain) {
     this.currentEvent = event;
-    const reporter = this.game.state.employees.find(e => e.id === event.reporter) || EMPLOYEES.find(e => e.id === event.reporter);
+    const reporter = this.game.state.employees.find(e => e.id === event.reporter) || EMPLOYEES.find(e => e.id === event.reporter) || { name: '???', title: '未知', emoji: '❓', color: '#888', style: '...' };
     const panel = document.getElementById('event-panel');
     const typeLabels = { crisis: '危机', opportunity: '机遇', daily: '日常', boss: 'BOSS级' };
     const typeColors = { crisis: '#ff4444', opportunity: '#6BCB77', daily: '#4ECDC4', boss: '#A78BFA' };
