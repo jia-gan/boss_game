@@ -3116,6 +3116,678 @@ const EVENTS = [
         message: '你觉得小公司不需要太复杂的制度。但半年后，又出现了报销作假的问题。钱多多辞职了："老板，你不建制度,我没法干。" 你后悔莫及。'
       }
     ]
+  },
+
+  // ============ 新增系列 S021-S030 ============
+
+  // S021: AI替代危机两部曲
+  {
+    id: 'E096', type: 'crisis',
+    isSeries: true, seriesId: 'S021', chapter: 1, totalChapters: 2,
+    title: 'AI替代危机·第一章：机器觉醒',
+    description: '林小默面无表情地打开笔记本电脑："老板，我用AI做了个实验。它用3分钟写完了陈画饼上周写了5天的方案，而且...更好。" 陈画饼脸都绿了。更可怕的是，AI还自动回复了12封客户邮件，客户说"这是你们服务最好的一次"。',
+    reporter: 'lin',
+    choices: [
+      {
+        text: '全面拥抱AI，大幅裁员提效',
+        effects: { funds: +15, morale: -20, reputation: -5, tech: +10, connections: 0 },
+        principles: { transparency: -1, talent: -2, machine: +2, meritocracy: 0, pain: -2, legacy: -1 },
+        message: '你宣布用AI替代50%的工作。办公室哭声一片。陈画饼收拾东西时说："我被一个没有感情的机器淘汰了。" 赵铁柱问："老板，AI能替我加班吗？"',
+        nextChapter: { eventId: 'E097', delay: 0, stateFlags: { approach: 'replace', morale_hit: true }}
+      },
+      {
+        text: '人机协作，AI辅助但不替代',
+        effects: { funds: -5, morale: +5, reputation: +10, tech: +8, connections: 0 },
+        principles: { transparency: +2, talent: +2, machine: +3, meritocracy: +1, pain: 0, legacy: +2 },
+        message: '你说："AI是工具，不是替代品。每个人学会用AI提升自己。" 一周后，钱多多用AI做出了以前需要三天的财报。她感慨："这玩意儿真香。"',
+        nextChapter: { eventId: 'E097', delay: 0, stateFlags: { approach: 'collaborate', morale_hit: false }}
+      },
+      {
+        text: '禁止使用AI，保护团队饭碗',
+        effects: { funds: 0, morale: +5, reputation: -10, tech: -15, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: -3, meritocracy: -1, pain: -2, legacy: -2 },
+        message: '你说："我们是人的公司，不是机器的。" 员工鼓掌。但竞对已经全面AI化，效率是你的3倍。林小默偷偷在家用AI写代码，被你发现后很尴尬。',
+        nextChapter: { eventId: 'E097', delay: 0, stateFlags: { approach: 'ban', morale_hit: false }}
+      }
+    ]
+  },
+  {
+    id: 'E097', type: 'opportunity',
+    isSeries: true, seriesId: 'S021', chapter: 2, totalChapters: 2,
+    title: 'AI替代危机·第二章：新秩序',
+    dynamicDescription: (state) => {
+      if (state.approach === 'replace') {
+        return '裁员后效率确实提升了，但AI开始出幺蛾子：给客户发了一封"您的智商不适合使用我们的产品"的邮件。客户炸了。林小默说："AI没有情商的问题...暴露了。"';
+      } else if (state.approach === 'collaborate') {
+        return '人机协作一个月后，团队效率提升200%。但新问题来了：张大炮用AI生成了一份完美的市场报告，结果数据全是AI编的。客户发现后大怒："你们用AI骗我？"';
+      } else {
+        return '禁AI一个月后，竞对推出了AI驱动的新产品，抢走了你30%的客户。林小默终于爆发了："老板，我不能用石器时代的工具打现代战争！" 全组程序员联名上书。';
+      }
+    },
+    reporter: 'chen',
+    choices: [
+      {
+        text: '制定AI使用规范，该用的用，该审的审',
+        effects: { funds: 0, morale: +8, reputation: +10, tech: +10, connections: 0 },
+        principles: { transparency: +3, talent: +1, machine: +3, meritocracy: +2, pain: +1, legacy: +3 },
+        message: '你制定了《AI使用手册》：创意用AI辅助，数据必须人工核实，客户沟通必须真人。行业媒体报道："这家公司的AI规范值得所有企业学习。"'
+      },
+      {
+        text: '成立AI部门，专人负责',
+        effects: { funds: -10, morale: +5, reputation: +5, tech: +15, connections: +5 },
+        principles: { transparency: +1, talent: +2, machine: +2, meritocracy: +1, pain: 0, legacy: +2 },
+        message: '你高薪挖了个AI专家。他来的第一天说："你们之前用AI的方式就像拿火箭筒打蚊子。" 三个月后，公司成了AI应用标杆。'
+      },
+      {
+        text: '管它呢，船到桥头自然直',
+        effects: { funds: 0, morale: -5, reputation: -5, tech: -5, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: -2, meritocracy: 0, pain: -2, legacy: -1 },
+        message: '你选择观望。三个月后，行业已经被AI重塑，你的公司成了"传统企业"。陈画饼说："老板，我们不是在观望，是在等死。"'
+      }
+    ]
+  },
+
+  // S022: 网红员工两部曲
+  {
+    id: 'E098', type: 'daily',
+    isSeries: true, seriesId: 'S022', chapter: 1, totalChapters: 2,
+    title: '网红员工·第一章：意外走红',
+    description: '赵铁柱慌慌张张跑来："老板！运营部小刘在短视频平台发了条吐槽加班的视频，火了！500万播放！评论区都在骂我们公司！" 你打开一看，视频标题是《我在XX公司的崩溃日常》，小刘边哭边加班的样子，看着确实挺惨的。',
+    reporter: 'zhao',
+    choices: [
+      {
+        text: '开除小刘，杀鸡儆猴',
+        effects: { funds: 0, morale: -15, reputation: -10, tech: 0, connections: 0 },
+        principles: { transparency: -3, talent: -2, machine: 0, meritocracy: -1, pain: -2, legacy: -1 },
+        message: '你当天就开了小刘。小刘含泪发了第二条视频《我因为发视频被开除了》，播放量2000万。#XX公司压榨员工#上了热搜。王美丽："老板...这波我们输麻了。"',
+        nextChapter: { eventId: 'E099', delay: 0, stateFlags: { action: 'fire', pr_crisis: true }}
+      },
+      {
+        text: '找小刘谈话，了解真实情况',
+        effects: { funds: 0, morale: +5, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: +1, machine: 0, meritocracy: +1, pain: +2, legacy: 0 },
+        message: '你请小刘喝咖啡。他说："老板对不起，我只是想吐槽，没想到会火。但...加班是真的多。" 你意识到这可能是个改善管理的契机。',
+        nextChapter: { eventId: 'E099', delay: 0, stateFlags: { action: 'talk', pr_crisis: false }}
+      },
+      {
+        text: '将计就计，让小刘当公司代言人',
+        effects: { funds: -5, morale: +3, reputation: +15, tech: 0, connections: +10 },
+        principles: { transparency: +1, talent: +2, machine: +1, meritocracy: 0, pain: 0, legacy: +1 },
+        message: '你说："既然火了，不如借势。" 你给小刘涨薪，让他继续拍，但内容变成《老板听了我的吐槽后...》。第二条视频播放3000万，风评反转。张大炮："老板，你是天生的流量操盘手。"',
+        nextChapter: { eventId: 'E099', delay: 0, stateFlags: { action: 'leverage', pr_crisis: false }}
+      }
+    ]
+  },
+  {
+    id: 'E099', type: 'opportunity',
+    isSeries: true, seriesId: 'S022', chapter: 2, totalChapters: 2,
+    title: '网红员工·第二章：流量变现',
+    dynamicDescription: (state) => {
+      if (state.pr_crisis) {
+        return '热搜挂了三天，公司门口来了两拨记者。投资人打来电话："你们最近风评不太好啊..." HR收到了20封辞职信。王美丽说："老板，我们需要危机公关。"';
+      } else if (state.action === 'leverage') {
+        return '小刘的账号涨到了100万粉丝，每天都有品牌找你们谈合作。但问题来了：小刘开始飘了，迟到早退还说"我要保持创作状态"。其他员工也不满："凭什么他拍视频比我写代码赚得多？"';
+      } else {
+        return '事情暂时平息了，但你发现公司加班文化确实有问题。赵铁柱偷偷告诉你："老板，其实大家都想发视频吐槽，只是没小刘那个胆。" 你需要从根本上解决问题。';
+      }
+    },
+    reporter: 'wang',
+    choices: [
+      {
+        text: '改革工作制度，用行动回应',
+        effects: { funds: -3, morale: +15, reputation: +10, tech: 0, connections: 0 },
+        principles: { transparency: +3, talent: +2, machine: +2, meritocracy: +1, pain: +2, legacy: +3 },
+        message: '你宣布弹性工作制，取消无效加班。发了全员邮件："小刘的视频让我反思，好的公司不需要靠加班证明努力。" 全员鼓掌。三个月后，效率反而提升了30%。'
+      },
+      {
+        text: '成立新媒体部门，把流量变成生意',
+        effects: { funds: +10, morale: +3, reputation: +8, tech: 0, connections: +10 },
+        principles: { transparency: 0, talent: +1, machine: +1, meritocracy: +1, pain: 0, legacy: +1 },
+        message: '你成立了新媒体部，小刘任主管。公司账号三个月涨粉200万，广告收入月入5万。陈画饼酸了："我做了三年PPT不如他拍三条视频。"'
+      },
+      {
+        text: '冷处理，等热度过去',
+        effects: { funds: 0, morale: -5, reputation: -5, tech: 0, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: 0, meritocracy: 0, pain: -1, legacy: -1 },
+        message: '你选择无视。一个月后热度确实过了，但公司的口碑已经凉了。招聘时候选人都会问："你们是不是那个上过热搜的公司？" 王美丽苦笑。'
+      }
+    ]
+  },
+
+  // S023: 团建灾难两部曲
+  {
+    id: 'E100', type: 'daily',
+    isSeries: true, seriesId: 'S023', chapter: 1, totalChapters: 2,
+    title: '团建灾难·第一章：出发',
+    description: '陈画饼兴冲冲地提议："老板！咱们好久没团建了！我找了个绝佳的地方——野外拓展基地！两天一夜，真人CS、攀岩、篝火晚会！保证增进团队凝聚力！" 钱多多立刻反对："预算呢？" 林小默也不想去："我...我那天可能要改Bug..."',
+    reporter: 'chen',
+    choices: [
+      {
+        text: '批准！豪华团建，预算不设限',
+        effects: { funds: -15, morale: +5, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: +1, machine: 0, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你大手一挥："团建嘛，开心最重要！" 钱多多肉疼得眼角抽搐。出发那天大家倒是挺开心，直到大巴在山路上抛锚了...',
+        nextChapter: { eventId: 'E101', delay: 0, stateFlags: { budget: 'unlimited', disaster_level: 'high' }}
+      },
+      {
+        text: '低成本团建，公司附近聚餐就行',
+        effects: { funds: -3, morale: +3, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你说："找个餐厅吃顿好的就行。" 陈画饼失望极了。聚餐当天，赵铁柱喝多了，抱着你说了两小时心里话。你才知道原来大家积怨这么深...',
+        nextChapter: { eventId: 'E101', delay: 0, stateFlags: { budget: 'low', disaster_level: 'low' }}
+      },
+      {
+        text: '不团建，把钱发给大家',
+        effects: { funds: -8, morale: +8, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: 0, machine: +1, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你说："团建不如发钱实在。" 每人到手2000块。大家开心极了。但陈画饼哭了："老板，我准备了一周的团建方案啊..."',
+        nextChapter: { eventId: 'E101', delay: 0, stateFlags: { budget: 'cash', disaster_level: 'none' }}
+      }
+    ]
+  },
+  {
+    id: 'E101', type: 'crisis',
+    isSeries: true, seriesId: 'S023', chapter: 2, totalChapters: 2,
+    title: '团建灾难·第二章：翻车现场',
+    dynamicDescription: (state) => {
+      if (state.disaster_level === 'high') {
+        return '大巴修好后继续前进，结果到了基地发现：攀岩墙断了一根绳，真人CS的枪一半是坏的，住的帐篷漏水。半夜下暴雨，全员挤在一个蒙古包里，赵铁柱打呼声震天响。林小默发朋友圈："求救。"';
+      } else if (state.disaster_level === 'low') {
+        return '聚餐后的周一，你发现问题比想象的严重。赵铁柱酒后说的那些话在公司传开了："听说老板其实快发不起工资了？" 谣言四起，人心惶惶。钱多多怒了："赵铁柱你喝多了说什么了！"';
+      } else {
+        return '发完钱的第二天，你在电梯里听到两个员工聊天："老板是不是不想搞团建啊？是不是公司要倒了所以提前分钱？" 你无语了。好心办坏事，这钱发得浑身是嘴也说不清。';
+      }
+    },
+    reporter: 'zhao',
+    choices: [
+      {
+        text: '自嘲化解，把糗事变成团队记忆',
+        effects: { funds: 0, morale: +12, reputation: +5, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: +1, machine: 0, meritocracy: +1, pain: +2, legacy: +2 },
+        message: '你在周会上自嘲："这次团建虽然翻车，但至少让我知道了你们的真实想法。" 全员大笑。后来这次"灾难团建"成了公司经典段子，每次聚餐都要翻出来讲一遍。'
+      },
+      {
+        text: '严肃处理，查清问题源头',
+        effects: { funds: 0, morale: -3, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: 0, machine: +1, meritocracy: +1, pain: +1, legacy: 0 },
+        message: '你认真复盘了这次事件，发现公司确实存在沟通不畅的问题。你建立了匿名反馈机制，以后不用靠喝酒才能听到真话了。'
+      },
+      {
+        text: '装没事发生，翻篇',
+        effects: { funds: 0, morale: -8, reputation: -3, tech: 0, connections: 0 },
+        principles: { transparency: -2, talent: 0, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
+        message: '你假装什么都没发生。但大家心里都有数。林小默在代码注释里写了一行："// 这段代码和我们的团建一样——一坨屎"。三个月后有人截图发到群里，全员笑出了声。'
+      }
+    ]
+  },
+
+  // S024: 00后实习生两部曲
+  {
+    id: 'E102', type: 'daily',
+    isSeries: true, seriesId: 'S024', chapter: 1, totalChapters: 2,
+    title: '00后整顿职场·第一章：新物种',
+    description: '王美丽哭笑不得："老板，新来的00后实习生小赵...第一天就拒绝了加班，第二天给全公司发了一份《员工权益手册》，第三天在例会上当面质疑陈画饼的方案\'数据呢？逻辑呢？全是废话\'。现在陈画饼躲在厕所不出来。"',
+    reporter: 'wang',
+    choices: [
+      {
+        text: '好苗子！重点培养',
+        effects: { funds: 0, morale: -5, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: +2, machine: 0, meritocracy: +3, pain: +1, legacy: +1 },
+        message: '你约小赵聊天，发现他虽然嘴欠但观点很犀利。你让他直接参与项目讨论。老员工们不满了："一个实习生凭什么？" 但小赵第一周就找到了产品的三个关键Bug。',
+        nextChapter: { eventId: 'E103', delay: 0, stateFlags: { attitude: 'cultivate', team_reaction: 'divided' }}
+      },
+      {
+        text: '年轻人需要教育，我来带带他',
+        effects: { funds: 0, morale: +3, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: 0, meritocracy: 0, pain: 0, legacy: +1 },
+        message: '你每周和小赵一对一谈话，教他"说话的艺术"。小赵说："老板，我理解了，不是不能说真话，是要看场合。" 两周后他学会了先夸再喷，效果好了很多。',
+        nextChapter: { eventId: 'E103', delay: 0, stateFlags: { attitude: 'mentor', team_reaction: 'neutral' }}
+      },
+      {
+        text: '实习期到了不留，太刺头了',
+        effects: { funds: 0, morale: +5, reputation: -5, tech: 0, connections: -5 },
+        principles: { transparency: -1, talent: -2, machine: 0, meritocracy: -2, pain: -1, legacy: -1 },
+        message: '你没有留小赵。他走的时候在群里发了条消息："感谢公司教会我一件事——在这里说真话是不被允许的。" 群里静默了五分钟。林小默私聊你："老板，他说得对。"',
+        nextChapter: { eventId: 'E103', delay: 0, stateFlags: { attitude: 'reject', team_reaction: 'silenced' }}
+      }
+    ]
+  },
+  {
+    id: 'E103', type: 'opportunity',
+    isSeries: true, seriesId: 'S024', chapter: 2, totalChapters: 2,
+    title: '00后整顿职场·第二章：代际冲突',
+    dynamicDescription: (state) => {
+      if (state.attitude === 'cultivate') {
+        return '小赵越来越活跃，开始质疑公司的一切："为什么要打卡？为什么要写周报？为什么不能远程？" 老员工集体投诉："老板，你再不管管他，我们管不了了。" 赵铁柱崩溃了："他跟我同姓，但我完全听不懂他说话。"';
+      } else if (state.attitude === 'mentor') {
+        return '小赵学会了"包装"自己的观点后，影响力越来越大。他做了个内部提案《如何让公司不像上世纪的工厂》，居然获得了70%的员工支持。老员工坐不住了："这公司到底谁说了算？"';
+      } else {
+        return '小赵离开后在社交平台发了篇长文《我在一家传统公司实习的30天》，阅读量10万+。里面每条吐槽都精准打击了公司的管理漏洞。评论区："求公司名字！" 王美丽慌了。';
+      }
+    },
+    reporter: 'zhao',
+    choices: [
+      {
+        text: '拥抱变化，推动管理年轻化',
+        effects: { funds: -3, morale: +10, reputation: +10, tech: +5, connections: +5 },
+        principles: { transparency: +3, talent: +2, machine: +2, meritocracy: +2, pain: +1, legacy: +3 },
+        message: '你成立了"创新委员会"，让年轻员工参与决策。取消了打卡和无效周报，引入了OKR。三个月后，公司获评"最受年轻人欢迎的雇主"。赵铁柱："老板，我也想年轻化，但我的腰不允许。"'
+      },
+      {
+        text: '各退一步，新老员工互相理解',
+        effects: { funds: 0, morale: +5, reputation: +3, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: +1, meritocracy: +1, pain: +1, legacy: +1 },
+        message: '你组织了一场"代际对话"。老员工说了他们的坚持，年轻人说了他们的困惑。赵铁柱："原来你们不是偷懒，是真的觉得打卡没意义。" 小赵："原来你们不是古板，是习惯了。"'
+      },
+      {
+        text: '维持现状，公司不能被实习生改变',
+        effects: { funds: 0, morale: -8, reputation: -5, tech: 0, connections: -5 },
+        principles: { transparency: -2, talent: -1, machine: -1, meritocracy: -2, pain: -1, legacy: -2 },
+        message: '你说："公司制度不是一个实习生能改的。" 三个月后，5个年轻员工集体离职。招聘启事挂了两个月，00后候选人看到公司名字就划走了。'
+      }
+    ]
+  },
+
+  // S025: 办公室灵异两部曲
+  {
+    id: 'E104', type: 'daily',
+    isSeries: true, seriesId: 'S025', chapter: 1, totalChapters: 2,
+    title: '办公室灵异·第一章：怪事频发',
+    description: '赵铁柱一脸惊恐："老板，最近办公室怪事不断：加班到12点的人说听到隔壁会议室有人开会，但门打开没人；茶水间的灯老是自己亮；最诡异的是...每天早上张大炮桌上的仙人掌都会移动位置。" 张大炮补充："而且我的仙人掌死了三盆了！"',
+    reporter: 'zhao',
+    choices: [
+      {
+        text: '请个风水大师来看看',
+        effects: { funds: -5, morale: +3, reputation: -5, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: -2, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '风水大师来了，围着办公室转了三圈："你们这个工位布局，属虎的和属兔的不能对坐。" 林小默："......我只相信科学。" 但当晚他偷偷把工位上的镜子摘了。',
+        nextChapter: { eventId: 'E105', delay: 0, stateFlags: { approach: 'fengshui', fear_level: 'medium' }}
+      },
+      {
+        text: '安装监控，用科学解释一切',
+        effects: { funds: -3, morale: 0, reputation: 0, tech: +3, connections: 0 },
+        principles: { transparency: +2, talent: 0, machine: +2, meritocracy: +1, pain: +1, legacy: 0 },
+        message: '你在办公室装了监控。第二天回看录像，真相大白：是保洁阿姨半夜来打扫，不小心碰了仙人掌，吓到了加班的人。会议室的"声音"是隔壁公司在做英语角。',
+        nextChapter: { eventId: 'E105', delay: 0, stateFlags: { approach: 'science', fear_level: 'low' }}
+      },
+      {
+        text: '无视，都是迷信',
+        effects: { funds: 0, morale: -8, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: 0, meritocracy: 0, pain: -1, legacy: 0 },
+        message: '你说："别搞封建迷信。" 但当天晚上加班时，你亲眼看到会议室的灯自己亮了。你假装镇定地走过去关灯，发现是灯的感应器坏了。但你的手...在抖。',
+        nextChapter: { eventId: 'E105', delay: 0, stateFlags: { approach: 'ignore', fear_level: 'high' }}
+      }
+    ]
+  },
+  {
+    id: 'E105', type: 'opportunity',
+    isSeries: true, seriesId: 'S025', chapter: 2, totalChapters: 2,
+    title: '办公室灵异·第二章：真相',
+    dynamicDescription: (state) => {
+      if (state.approach === 'fengshui') {
+        return '风水大师走后，全公司开始研究风水。程序员改了代码变量名，把"error"改成"吉祥如意"；张大炮在办公桌放了个招财猫。但最神奇的是——那周的业绩确实涨了20%。钱多多陷入了唯物主义危机。';
+      } else if (state.approach === 'science') {
+        return '真相揭开后大家松了口气。但保洁阿姨因为"被监控拍到"而辞职了。新来的保洁不擦工位、不倒垃圾，办公室一周就变成了猪窝。赵铁柱："老板，我开始怀念那个\'闹鬼\'的时候了。"';
+      } else {
+        return '灵异传闻越传越邪乎。有人说看到"前租户的CEO鬼魂在会议室开会"，有人说厕所里有哭声（其实是水管漏水）。现在没人敢加班了，6点准时下班。效率反而提升了。王美丽："老板，要不...就让他们继续信？"';
+      }
+    },
+    reporter: 'wang',
+    choices: [
+      {
+        text: '借机推行准时下班文化',
+        effects: { funds: 0, morale: +12, reputation: +5, tech: +3, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: +1, meritocracy: 0, pain: 0, legacy: +2 },
+        message: '你宣布："以后7点后不准加班。" 大家表面说"遵命"，心里想的是"反正也不敢待"。一个月后你发现：效率提升了，Bug减少了，员工脸上有笑容了。原来不加班才是最大的生产力。'
+      },
+      {
+        text: '搞一次全员大扫除，破除迷信',
+        effects: { funds: -2, morale: +5, reputation: 0, tech: 0, connections: +3 },
+        principles: { transparency: +2, talent: 0, machine: +1, meritocracy: 0, pain: +1, legacy: 0 },
+        message: '你组织了一次全员大扫除。清理出了三年前的外卖盒、发霉的零食、和一只住在服务器机房里的猫。林小默："难怪服务器老是发出奇怪的声音...原来是它。" 猫被收养了，取名"Bug"。'
+      },
+      {
+        text: '换办公室，一了百了',
+        effects: { funds: -15, morale: +8, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: -1, legacy: 0 },
+        message: '你花了大价钱搬了新办公室。搬家那天赵铁柱问："老板你不是说不信吗？" 你说："我不信，但钱花了心安。" 新办公室第一天就停电了。全员沉默。陈画饼："...不会吧？"'
+      }
+    ]
+  },
+
+  // S026: 老板相亲两部曲
+  {
+    id: 'E106', type: 'daily',
+    isSeries: true, seriesId: 'S026', chapter: 1, totalChapters: 2,
+    title: '老板的私生活·第一章：被安排了',
+    description: '王美丽突然神秘兮兮地说："老板，你单身太久了。我和刘阿姨给你安排了个相亲对象——投资圈的Sarah。" 你还没反应过来，她就把照片发到了管理层群里。张大炮："不错啊老板！" 钱多多："她家做什么的？有钱吗？" 林小默发了个表情包后退出了群聊。',
+    reporter: 'wang',
+    choices: [
+      {
+        text: '去吧，万一是真爱呢',
+        effects: { funds: -3, morale: +5, reputation: 0, tech: 0, connections: +5 },
+        principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: +1, legacy: 0 },
+        message: '你硬着头皮去了。Sarah上来第一个问题："你公司估值多少？" 第二个问题："融到哪轮了？" 你说："你是来相亲的还是来尽调的？" 她说："在投资圈，这是一回事。"',
+        nextChapter: { eventId: 'E107', delay: 0, stateFlags: { went: true, impression: 'mixed' }}
+      },
+      {
+        text: '拒绝，公私要分开',
+        effects: { funds: 0, morale: -3, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: 0, machine: +1, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你说："别操心我的私生活。" 王美丽失望极了。但刘阿姨不死心，在你常去的便利店堵你，身边带着另一个"碰巧路过"的姑娘。你落荒而逃。',
+        nextChapter: { eventId: 'E107', delay: 0, stateFlags: { went: false, impression: 'none' }}
+      },
+      {
+        text: '反将一军，给王美丽也安排一个',
+        effects: { funds: 0, morale: +8, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你说："我去可以，但王美丽你也得去相亲。" 王美丽脸红了。当天晚上两组相亲同步进行，你和王美丽疯狂给对方发微信吐槽各自的对象。这成了你们最好的teambuilding。',
+        nextChapter: { eventId: 'E107', delay: 0, stateFlags: { went: true, impression: 'funny' }}
+      }
+    ]
+  },
+  {
+    id: 'E107', type: 'opportunity',
+    isSeries: true, seriesId: 'S026', chapter: 2, totalChapters: 2,
+    title: '老板的私生活·第二章：后续影响',
+    dynamicDescription: (state) => {
+      if (state.impression === 'mixed') {
+        return 'Sarah虽然像在做尽调，但确实帮你理清了商业模式——"你们的获客成本太高，应该做渠道下沉。" 约会变成了免费咨询。她走后你发现，她的建议比陈画饼靠谱得多。问题是：你该约她第二次吗？';
+      } else if (state.impression === 'funny') {
+        return '相亲的事在公司传开了。大家发现老板也有普通人的烦恼，距离感一下拉近了。但陈画饼开始打歪主意："老板，投资圈有很多单身女性，我们搞个\'投资人相亲会\'怎么样？顺便融个资？"';
+      } else {
+        return '你拒绝相亲的事在公司传开了，大家开始猜你的感情状况。刘阿姨在食堂散布："老板是不是有对象了？我看他最近老是偷笑。" 你只是在看搞笑视频。现在全公司都在打探你的八卦。';
+      }
+    },
+    reporter: 'chen',
+    choices: [
+      {
+        text: '公私分明，以后别管我的私事',
+        effects: { funds: 0, morale: -3, reputation: +3, tech: 0, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: +1, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你在周会上严肃声明："以后不准讨论老板的私生活。" 全场安静。但散会后你听到赵铁柱小声说："老板该不会是被拒绝了吧..." 你假装没听到。'
+      },
+      {
+        text: '借此机会拉近和团队的关系',
+        effects: { funds: 0, morale: +10, reputation: 0, tech: 0, connections: +5 },
+        principles: { transparency: +2, talent: +1, machine: 0, meritocracy: 0, pain: +1, legacy: +1 },
+        message: '你在群里主动分享了相亲的囧事，大家笑成一片。从此老板不再是高高在上的存在，而是"那个相亲被当成融资路演"的可怜人。团队氛围前所未有地好。'
+      },
+      {
+        text: '真去找Sarah聊合作',
+        effects: { funds: 0, morale: 0, reputation: +5, tech: 0, connections: +15 },
+        principles: { transparency: 0, talent: 0, machine: +1, meritocracy: 0, pain: 0, legacy: +1 },
+        message: '你约了Sarah喝咖啡，这次聊的全是业务。她说："你这人有意思，相亲像谈生意，谈生意倒很真诚。" 她介绍了三个优质客户给你。陈画饼："老板，你的桃花运变成了财运。"'
+      }
+    ]
+  },
+
+  // S027: 房东涨租两部曲
+  {
+    id: 'E108', type: 'crisis',
+    isSeries: true, seriesId: 'S027', chapter: 1, totalChapters: 2,
+    title: '房东涨租·第一章：噩耗',
+    description: '钱多多铁青着脸走进来："老板，房东来了。租金下个月涨50%。不接受就搬。" 你算了一下，涨完后光租金就吃掉月营收的40%。隔壁工位的公司上周刚跑路了，据说也是被租金逼走的。',
+    reporter: 'qian',
+    choices: [
+      {
+        text: '硬刚房东，据理力争',
+        effects: { funds: 0, morale: +3, reputation: 0, tech: 0, connections: -5 },
+        principles: { transparency: +1, talent: 0, machine: 0, meritocracy: 0, pain: +2, legacy: 0 },
+        message: '你和房东吵了两个小时。房东最后说："小伙子，别的公司出价更高。你不租有的是人租。" 钱多多拉着你走了："老板，别吵了，没用的。" 你第一次感受到了什么叫"甲方的绝对权力"。',
+        nextChapter: { eventId: 'E109', delay: 0, stateFlags: { negotiation: 'failed', must_move: true }}
+      },
+      {
+        text: '接受涨租，稳定最重要',
+        effects: { funds: -12, morale: 0, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: 0, meritocracy: 0, pain: -1, legacy: 0 },
+        message: '你咬牙签了新合同。钱多多心疼得直跺脚："这笔钱够发两个月工资了！" 但至少不用折腾搬家。你开始理解为什么那么多老板说"房租是最大的固定成本"。',
+        nextChapter: { eventId: 'E109', delay: 0, stateFlags: { negotiation: 'accepted', must_move: false }}
+      },
+      {
+        text: '直接搬家，找更便宜的地方',
+        effects: { funds: -8, morale: -5, reputation: 0, tech: -5, connections: 0 },
+        principles: { transparency: 0, talent: 0, machine: +1, meritocracy: 0, pain: +1, legacy: 0 },
+        message: '你说："搬！" 钱多多立刻找了个便宜50%的新地方。缺点是——在五环外，地铁走路20分钟。林小默看了地址说："老板，这不是郊区，这是农村。" 赵铁柱安慰大家："空气好。"',
+        nextChapter: { eventId: 'E109', delay: 0, stateFlags: { negotiation: 'move', must_move: true }}
+      }
+    ]
+  },
+  {
+    id: 'E109', type: 'opportunity',
+    isSeries: true, seriesId: 'S027', chapter: 2, totalChapters: 2,
+    title: '房东涨租·第二章：安家',
+    dynamicDescription: (state) => {
+      if (state.negotiation === 'accepted') {
+        return '涨租后的第一个月，你发现现金流吃紧。钱多多每天对着账本叹气："老板，再这样下去三个月就撑不住了。" 你开始认真考虑是否应该搬家或者开源节流。';
+      } else if (state.negotiation === 'move') {
+        return '搬到新办公室的第一天，大家发现：WiFi信号只有一格，外卖要加8块配送费，最近的咖啡店在3公里外。林小默自带了移动热点，张大炮自带了咖啡机。赵铁柱："像回到了游击战年代。"';
+      } else {
+        return '和房东谈崩后，你必须一周内搬走。全员紧急打包。搬家那天下着雨，大家扛着电脑和显示器往货车上装。路过的外卖小哥同情地看了你们一眼。陈画饼淋着雨说："老板，这一幕我要写进公司史。"';
+      }
+    },
+    reporter: 'zhao',
+    choices: [
+      {
+        text: '推行远程办公，减少办公面积',
+        effects: { funds: +10, morale: +5, reputation: +5, tech: +3, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: +2, meritocracy: 0, pain: +1, legacy: +2 },
+        message: '你宣布每周只需到办公室两天。租了个小工位当据点，省了60%租金。林小默在家撸着猫写代码，效率翻倍。赵铁柱："老板，你早该这么干了。" 钱多多笑开了花。'
+      },
+      {
+        text: '苦中作乐，把困难变成团队记忆',
+        effects: { funds: 0, morale: +10, reputation: +3, tech: 0, connections: +3 },
+        principles: { transparency: +2, talent: +1, machine: 0, meritocracy: 0, pain: +2, legacy: +2 },
+        message: '你买了一箱啤酒，在新办公室（虽然简陋）开了个"乔迁派对"。大家坐在纸箱上喝酒聊天，聊到半夜。陈画饼说："虽然地方破了点，但感觉比以前更像一家人了。" 这成了公司最温暖的记忆。'
+      },
+      {
+        text: '咬牙租更好的办公室，撑面子',
+        effects: { funds: -18, morale: +3, reputation: +8, tech: 0, connections: +5 },
+        principles: { transparency: -1, talent: 0, machine: -1, meritocracy: 0, pain: -1, legacy: 0 },
+        message: '你租了个更贵的写字楼："搬就搬个好的。" 钱多多差点晕倒。新办公室确实气派，客户来了都说"你们发展不错嘛"。但你每晚看着账单失眠。这就是所谓的"死要面子活受罪"。'
+      }
+    ]
+  },
+
+  // S028: 全员摸鱼两部曲
+  {
+    id: 'E110', type: 'daily',
+    isSeries: true, seriesId: 'S028', chapter: 1, totalChapters: 2,
+    title: '全员摸鱼·第一章：抓现行',
+    description: '你某天提前回办公室，被眼前的景象震惊了：林小默在刷技术论坛（好歹和工作有关），张大炮在炒股，王美丽在追剧，陈画饼在写小说，赵铁柱在打游戏——而且段位比他的KPI还高。只有钱多多在工作，因为她在算"按目前的摸鱼强度公司还能撑多久"。',
+    reporter: 'qian',
+    choices: [
+      {
+        text: '暴怒！全员扣工资',
+        effects: { funds: +5, morale: -20, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: -1, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
+        message: '你拍了桌子："上班时间不干活，工资还想要？全员扣20%！" 办公室鸦雀无声。当天下午所有人都在工作，但效率奇低——因为他们在带薪生气。',
+        nextChapter: { eventId: 'E111', delay: 0, stateFlags: { reaction: 'punish', atmosphere: 'toxic' }}
+      },
+      {
+        text: '假装没看到，反思为什么大家摸鱼',
+        effects: { funds: 0, morale: 0, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: 0, talent: +1, machine: +2, meritocracy: +1, pain: +2, legacy: +1 },
+        message: '你默默退了出去。回到自己办公室想了想：是不是工作没有挑战性？是不是流程太无聊了？你决定找个时间和大家聊聊。钱多多说："老板，你今天有点反常。"',
+        nextChapter: { eventId: 'E111', delay: 0, stateFlags: { reaction: 'reflect', atmosphere: 'neutral' }}
+      },
+      {
+        text: '加入他们，反正今天也没什么急事',
+        effects: { funds: 0, morale: +10, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: 0, machine: -1, meritocracy: 0, pain: 0, legacy: 0 },
+        message: '你搬了把椅子坐在赵铁柱旁边："什么游戏？带我一个。" 全员石化。五分钟后，你和赵铁柱组队上分了。张大炮发朋友圈："我老板在上班时间打游戏，我有证据。" 配图是你专注打游戏的背影。',
+        nextChapter: { eventId: 'E111', delay: 0, stateFlags: { reaction: 'join', atmosphere: 'relaxed' }}
+      }
+    ]
+  },
+  {
+    id: 'E111', type: 'opportunity',
+    isSeries: true, seriesId: 'S028', chapter: 2, totalChapters: 2,
+    title: '全员摸鱼·第二章：效率革命',
+    dynamicDescription: (state) => {
+      if (state.atmosphere === 'toxic') {
+        return '扣工资后的一周，公司氛围降到冰点。表面上大家都在干活，但实际上效率更低了。王美丽偷偷告诉你："老板，有三个人在投简历了。" 你意识到简单粗暴的惩罚不是办法。';
+      } else if (state.atmosphere === 'relaxed') {
+        return '你和赵铁柱打了一下午游戏的事传遍了全公司。第二天，所有人都在明目张胆地摸鱼。钱多多急了："老板！你开了个坏头！本来偷偷摸摸的，现在光明正大了！" 你意识到不能总这么下去。';
+      } else {
+        return '你思考了一晚上，终于想明白了：不是员工不想干活，是干的活没有意义。陈画饼的方案没人看，赵铁柱的报表没人用，王美丽的流程没人遵守。大家摸鱼，本质上是对"无效工作"的无声抗议。';
+      }
+    },
+    reporter: 'lin',
+    choices: [
+      {
+        text: '重新定义工作内容，砍掉无效任务',
+        effects: { funds: 0, morale: +15, reputation: +5, tech: +5, connections: 0 },
+        principles: { transparency: +3, talent: +2, machine: +3, meritocracy: +2, pain: +1, legacy: +3 },
+        message: '你砍掉了60%的会议、80%的周报、和所有"给领导看的"PPT。赵铁柱："老板，你把我一半的工作砍了..." 你说："那另一半好好干。" 一个月后，产出反而提升了，因为大家只做有意义的事了。'
+      },
+      {
+        text: '引入结果导向，不管过程只看成果',
+        effects: { funds: 0, morale: +8, reputation: +3, tech: +3, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: +2, meritocracy: +2, pain: 0, legacy: +2 },
+        message: '你宣布："以后不看工时看成果。只要完成目标，你去月球上班我都不管。" 林小默当天把一周的活两天干完了，剩下三天在家撸猫。赵铁柱用了三天完成目标，剩下两天打游戏——但这次是心安理得的。'
+      },
+      {
+        text: '安装监控软件，严格管理上网行为',
+        effects: { funds: -3, morale: -15, reputation: -10, tech: 0, connections: 0 },
+        principles: { transparency: -3, talent: -2, machine: 0, meritocracy: -1, pain: -1, legacy: -2 },
+        message: '你装了电脑监控软件。第二天林小默辞职了："我不在被监视的环境里写代码。" 其他人没走，但开始用手机摸鱼——毕竟手机你管不着。钱多多："老板，你花钱买了个寂寞。"'
+      }
+    ]
+  },
+
+  // S029: 竞对碰瓷两部曲
+  {
+    id: 'E112', type: 'crisis',
+    isSeries: true, seriesId: 'S029', chapter: 1, totalChapters: 2,
+    title: '竞对碰瓷·第一章：被黑了',
+    description: '张大炮怒冲冲地甩过来一个链接："老板你看这个！竞对在论坛发了篇黑稿，说我们产品抄袭、数据造假、老板跑路在即！阅读量已经10万+了！评论区全在骂我们！而且...他们用了五个不同的小号互相抬轿子！"',
+    reporter: 'zhang',
+    choices: [
+      {
+        text: '以牙还牙，也去写他们的黑稿',
+        effects: { funds: -3, morale: +3, reputation: -10, tech: 0, connections: -5 },
+        principles: { transparency: -2, talent: 0, machine: 0, meritocracy: 0, pain: -1, legacy: -2 },
+        message: '你让张大炮写了三篇反击文章。两家公司在论坛上互撕了一周。网友看热闹："这俩公司是不是一对？" 最后两败俱伤，行业形象全完了。钱多多："老板，我们在打口水仗的时候，客户跑了。"',
+        nextChapter: { eventId: 'E113', delay: 0, stateFlags: { response: 'retaliate', damage: 'mutual' }}
+      },
+      {
+        text: '收集证据，走法律途径',
+        effects: { funds: -8, morale: 0, reputation: +5, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: 0, machine: +1, meritocracy: +1, pain: +1, legacy: +1 },
+        message: '你请了律师取证。小号IP全部追溯到了竞对公司。律师函一发，对方慌了，连夜删帖道歉。但诉讼要打半年。钱多多："律师费比造谣成本高10倍，这就是现实。"',
+        nextChapter: { eventId: 'E113', delay: 0, stateFlags: { response: 'legal', damage: 'controlled' }}
+      },
+      {
+        text: '用产品说话，加速迭代打脸竞对',
+        effects: { funds: -5, morale: +10, reputation: +8, tech: +10, connections: 0 },
+        principles: { transparency: +1, talent: +1, machine: +2, meritocracy: +1, pain: +2, legacy: +2 },
+        message: '你说："最好的回应是把产品做到他们抄不了的程度。" 团队被激怒了，两周内加班做出了三个新功能。用户评价："这更新速度...是被竞对刺激了？" 林小默："是，但我们把愤怒变成了代码。"',
+        nextChapter: { eventId: 'E113', delay: 0, stateFlags: { response: 'product', damage: 'minimal' }}
+      }
+    ]
+  },
+  {
+    id: 'E113', type: 'opportunity',
+    isSeries: true, seriesId: 'S029', chapter: 2, totalChapters: 2,
+    title: '竞对碰瓷·第二章：反转',
+    dynamicDescription: (state) => {
+      if (state.response === 'retaliate') {
+        return '互撕两周后，有个行业大佬在朋友圈说："这两家公司与其互相泼脏水，不如好好做产品。" 你和竞对同时被行业拉黑了。更糟的是，一家新公司趁你们内斗时抢走了30%市场。';
+      } else if (state.response === 'legal') {
+        return '法院判你赢了，竞对赔偿10万并公开道歉。但诉讼期间你分心了，产品更新停滞。用户说："官司赢了，产品输了。" 钱多多算了笔账："律师费8万，赔偿10万，净赚2万，但丢的客户价值50万..."';
+      } else {
+        return '你们的新功能上线后，用户量暴涨50%。竞对的黑稿不攻自破——评论区画风变了："他们说的抄袭？人家已经领先两代了。" 竞对CEO气得摔了手机。现在轮到你考虑下一步了。';
+      }
+    },
+    reporter: 'zhang',
+    choices: [
+      {
+        text: '和竞对握手言和，合作共赢',
+        effects: { funds: 0, morale: +5, reputation: +10, tech: 0, connections: +10 },
+        principles: { transparency: +2, talent: 0, machine: +1, meritocracy: +1, pain: +2, legacy: +2 },
+        message: '你主动约竞对CEO喝咖啡："打来打去都是内耗，不如合作。" 对方惊了："你不记仇？" 你说："记仇不赚钱。" 两家联合发布了一份行业白皮书，双方口碑都恢复了。'
+      },
+      {
+        text: '乘胜追击，彻底碾压竞对',
+        effects: { funds: -10, morale: +8, reputation: +5, tech: +8, connections: -3 },
+        principles: { transparency: 0, talent: +1, machine: +2, meritocracy: 0, pain: +1, legacy: +1 },
+        message: '你加大投入，三个月内做了竞对两年的量。对方扛不住了，开始裁员。林小默有点同情："老板，会不会太狠了？" 你说："商场如战场。" 但你心里也在想：下一个被碰瓷的会是谁？'
+      },
+      {
+        text: '不管竞对了，专注自己的路',
+        effects: { funds: 0, morale: +5, reputation: +5, tech: +5, connections: +3 },
+        principles: { transparency: +1, talent: +1, machine: +1, meritocracy: +1, pain: +1, legacy: +2 },
+        message: '你说："眼里只有竞对的公司走不远。" 你把注意力放回用户身上。半年后你发现，竞对还在原地踏步，而你已经开辟了新市场。陈画饼感慨："最好的复仇是活得比对方好。"'
+      }
+    ]
+  },
+
+  // S030: 老板体检两部曲
+  {
+    id: 'E114', type: 'crisis',
+    isSeries: true, seriesId: 'S030', chapter: 1, totalChapters: 2,
+    title: '老板体检·第一章：红灯警告',
+    description: '你年度体检报告出来了。医生看着报告，摘下眼镜，深吸一口气："你今年多大？" 你说："30出头。" 他说："你的身体像50岁的——脂肪肝、高血压、颈椎病、胃溃疡、重度失眠。再这样下去......" 你突然理解了为什么那么多老板最终败给了自己的身体。',
+    reporter: 'wang',
+    choices: [
+      {
+        text: '吓到了，立刻调整作息',
+        effects: { funds: 0, morale: +5, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: +1, talent: 0, machine: +1, meritocracy: 0, pain: +2, legacy: +2 },
+        message: '你宣布每天6点准时下班，开始健身。第一天跑步800米就喘了。赵铁柱陪你跑，还假装跑不动让你有面子。一个月后你轻了5斤，但公司业绩也轻了——因为你不在的晚上，没人做决策。',
+        nextChapter: { eventId: 'E115', delay: 0, stateFlags: { choice: 'healthy', delegation: false }}
+      },
+      {
+        text: '没事，年轻人扛得住，继续干',
+        effects: { funds: +3, morale: 0, reputation: 0, tech: 0, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: -1, meritocracy: 0, pain: -3, legacy: -2 },
+        message: '你把体检报告塞进抽屉："等公司上了正轨再养生。" 两周后你在会议上突然眩晕，差点摔倒。王美丽吓坏了，林小默扶着你说："老板，公司没了可以再开，人没了就..."',
+        nextChapter: { eventId: 'E115', delay: 0, stateFlags: { choice: 'ignore', delegation: false }}
+      },
+      {
+        text: '开始培养团队独立运作的能力',
+        effects: { funds: 0, morale: +3, reputation: +5, tech: 0, connections: 0 },
+        principles: { transparency: +2, talent: +2, machine: +3, meritocracy: +2, pain: +2, legacy: +3 },
+        message: '你意识到问题的根源：公司离不开你，所以你不敢停下来。你开始把决策权下放：林小默管技术，钱多多管财务，王美丽管团队。陈画饼问："那我管什么？" 你说："管好你自己就行。"',
+        nextChapter: { eventId: 'E115', delay: 0, stateFlags: { choice: 'delegate', delegation: true }}
+      }
+    ]
+  },
+  {
+    id: 'E115', type: 'opportunity',
+    isSeries: true, seriesId: 'S030', chapter: 2, totalChapters: 2,
+    title: '老板体检·第二章：人生选择',
+    dynamicDescription: (state) => {
+      if (state.choice === 'delegate') {
+        return '放权一个月后，你发现公司居然运转得比以前还好。林小默的技术决策更大胆了，钱多多的成本控制更精细了。你第一次有了一整个周末不看手机。周一回来，大家笑着说："老板，你不在的时候我们效率更高。" 你不知道该高兴还是难过。';
+      } else if (state.choice === 'ignore') {
+        return '眩晕事件后，你被强制送去住院三天。躺在病床上，你接到了17个工作电话，3个客户投诉，和1条陈画饼发的"老板你快回来公司要炸了"。你偷偷拔了点滴回公司。护士追到电梯口："你不要命了？！"';
+      } else {
+        return '坚持健身两个月后，你瘦了10斤，精神焕发。但你发现自己不在办公室的时间越来越多，团队开始有些松散。钱多多说："老板，你现在是半退休状态吗？" 你需要找到工作和健康的平衡点。';
+      }
+    },
+    reporter: 'lin',
+    choices: [
+      {
+        text: '建立"老板不在也能转"的组织',
+        effects: { funds: 0, morale: +10, reputation: +10, tech: +5, connections: +5 },
+        principles: { transparency: +3, talent: +3, machine: +3, meritocracy: +2, pain: +2, legacy: +3 },
+        message: '你花了一个月建立了完整的授权体系和决策流程。从此你只管战略，日常运营交给团队。三个月后公司营收涨了30%。你的体检报告也好转了。赵铁柱："原来老板不加班，公司更赚钱。"'
+      },
+      {
+        text: '带着团队一起养生',
+        effects: { funds: -5, morale: +12, reputation: +5, tech: 0, connections: +3 },
+        principles: { transparency: +1, talent: +2, machine: 0, meritocracy: 0, pain: +1, legacy: +2 },
+        message: '你在公司设了健身角，每天下午3点全员做操。刘阿姨的养生汤成了下午茶标配。三个月后全员体检，指标全面好转。有人在社交平台发帖："我们公司下午3点集体做操，像回到了小学。" 下面全是"求入职"。'
+      },
+      {
+        text: '拼最后一把，等公司稳了再休息',
+        effects: { funds: +5, morale: -5, reputation: 0, tech: +3, connections: 0 },
+        principles: { transparency: -1, talent: 0, machine: 0, meritocracy: 0, pain: -2, legacy: -1 },
+        message: '你说"再拼三个月"。三个月后你又说"再拼三个月"。半年后你二进医院了。这次林小默在你病床前放了一台笔记本电脑，壁纸是你的体检报告。他说："老板，这是我见过最难修的Bug——在你自己身上。"'
+      }
+    ]
   }
 ];
 
@@ -3265,7 +3937,47 @@ const DALIO_ADVICE = {
 
   // S020: 内部腐败系列
   'E094': '达利欧说："腐败的根源是制度漏洞，不只是个人品德问题。建立透明的机制，让腐败无处藏身。"',
-  'E095': '达利欧说："完善的内控体系是企业长久发展的基石。投资制度建设，预防永远比事后处理更有效。"'
+  'E095': '达利欧说："完善的内控体系是企业长久发展的基石。投资制度建设，预防永远比事后处理更有效。"',
+
+  // S021: AI替代危机系列
+  'E096': '达利欧说："技术变革不可阻挡。聪明的领导者不是抵抗变化，而是拥抱变化并找到人与技术协作的最佳方式。"',
+  'E097': '达利欧说："面对AI浪潮，关键不是恐惧被替代，而是思考如何让团队进化。人的创造力和判断力永远是不可替代的。"',
+
+  // S022: 网红员工系列
+  'E098': '达利欧说："员工的个人品牌可以是公司资产，也可以是风险。建立清晰的边界和规则，比事后处理更重要。"',
+  'E099': '达利欧说："面对流量时代，企业需要拥抱新的传播方式，但核心价值观不能动摇。流量是工具，不是目的。"',
+
+  // S023: 团建灾难系列
+  'E100': '达利欧说："团队建设的核心不是活动形式，而是建立真正的信任和默契。形式服务于内容，不要本末倒置。"',
+  'E101': '达利欧说："危机往往是团队凝聚力的试金石。共同经历困难后建立的信任，比任何团建活动都更牢固。"',
+
+  // S024: 00后实习生系列
+  'E102': '达利欧说："每一代人都有自己的价值观和工作方式。好的管理者不是强迫年轻人适应旧规则，而是找到代际协作的最佳模式。"',
+  'E103': '达利欧说："年轻人的直言不讳是宝贵的资产。创意择优意味着最好的想法应该获胜，不管它来自实习生还是CEO。"',
+
+  // S025: 办公室灵异系列
+  'E104': '达利欧说："面对未知和恐惧，理性分析比盲目恐慌更重要。用系统思维找到问题的根源，而不是被表象吓倒。"',
+  'E105': '达利欧说："团队士气受情绪影响很大。领导者需要在不确定性中保持冷静，给团队传递信心和安全感。"',
+
+  // S026: 老板相亲系列
+  'E106': '达利欧说："工作与生活的平衡不是奢侈品，而是可持续发展的必需品。燃烧自己不是领导力，是自毁。"',
+  'E107': '达利欧说："真正的成功是全面的。事业成功但生活失败，不是真正的成功。找到自己的平衡点。"',
+
+  // S027: 房东涨租系列
+  'E108': '达利欧说："固定成本管理是企业生存的基本功。永远要有Plan B，不要让自己被单一因素卡住脖子。"',
+  'E109': '达利欧说："危机中的决策考验领导者的判断力。短期成本和长期价值之间的权衡，是管理的核心能力。"',
+
+  // S028: 全员摸鱼系列
+  'E110': '达利欧说："员工摸鱼的根源往往不是懒惰，而是缺乏目标感和意义感。好的管理是激发内驱力，而非外部监控。"',
+  'E111': '达利欧说："信任与自律是相互成就的。给员工自由的同时建立清晰的目标和反馈机制，效率自然会提升。"',
+
+  // S029: 竞对碰瓷系列
+  'E112': '达利欧说："面对不正当竞争，保持自己的原则比报复更重要。市场终会奖励那些坚守正道的企业。"',
+  'E113': '达利欧说："竞争是商业的常态。把精力放在提升自己而不是打压对手上，才是最聪明的竞争策略。"',
+
+  // S030: 老板体检系列
+  'E114': '达利欧说："领导者的健康就是公司的健康。建立不依赖个人的组织体系，才能让公司在任何情况下都能运转。"',
+  'E115': '达利欧说："身体是革命的本钱，这不是空话。可持续的工作方式比拼命加班更能创造长期价值。"'
 };
 
 // 导出
