@@ -241,9 +241,11 @@ class BossGame {
     this.save();
     this.ui.updateDashboard(this.state);
 
-    // 立即检查是否破产
+    // 立即检查是否破产（月初运营扣费导致）
     const deadStat = this.checkGameOver();
     if (deadStat) {
+      // 玩家未实际游玩此月（还没做决策就破产了），月份回退
+      this.state.week--;
       this.state.gameOver = true;
       const bankruptcyEnding = this.calculateBankruptcyEnding();
       this.state.ending = {
