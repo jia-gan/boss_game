@@ -3791,7 +3791,7 @@ const EVENTS = [
   }
 ];
 
-// 季度考核事件（第8、16、24周自动触发）
+// 季度考核事件
 const QUARTERLY_REVIEWS = [
   {
     id: 'Q1', title: '第一季度董事会考核',

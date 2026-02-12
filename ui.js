@@ -359,7 +359,7 @@ class GameUI {
     document.getElementById('ending-title').textContent = ending.title;
     document.getElementById('ending-subtitle').textContent = ending.subtitle;
     document.getElementById('ending-description').textContent = ending.description;
-    document.getElementById('ending-week').textContent = `坚持了 ${report.weeksPlayed} 周 / 做了 ${report.totalDecisions} 个决策`;
+    document.getElementById('ending-week').textContent = `坚持了 ${report.weeksPlayed} 月 / 做了 ${report.totalDecisions} 个决策`;
 
     // 达利欧报告
     const bossType = document.getElementById('boss-type');

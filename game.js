@@ -221,7 +221,7 @@ class BossGame {
       return;
     }
 
-    // 下一周
+    // 下一月
     this.advanceWeek();
   }
 
