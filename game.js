@@ -66,7 +66,11 @@ class BossGame {
       'S021', 'S022', 'S023', 'S024', 'S025', 'S026', 'S027', 'S028', 'S029', 'S030'
     ];
 
-    const available = allSeries.filter(id => !this.state.usedSeries.has(id));
+    let available = allSeries.filter(id => !this.state.usedSeries.has(id));
+    // S012（最终决战四部曲）只在第10月以后才能出现
+    if (currentWeek < 10) {
+      available = available.filter(id => id !== 'S012');
+    }
     if (available.length === 0) return null;
 
     const seriesId = available[Math.floor(Math.random() * available.length)];
