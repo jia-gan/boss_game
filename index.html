@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOSS大冒险 - 公司经营决策游戏</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+</head>
+<body>
+
+  <!-- ====== 开始画面 ====== -->
+  <div id="start-screen" class="start-screen">
+    <div class="start-content">
+      <div class="game-logo">🏢</div>
+      <h1 class="game-title">BOSS大冒险</h1>
+      <p class="game-subtitle">
+        你是新上任的CEO。员工们带着各种离谱的问题排队等你拍板。<br>
+        你的每一个决策都在塑造这家公司的命运。<br>
+        撑过12个月，你就是传奇。撑不过……地铁站见。
+      </p>
+      <div class="input-group">
+        <label for="company-name">给你的公司起个名字</label>
+        <input type="text" id="company-name" placeholder="摸鱼科技" maxlength="20" autocomplete="off">
+      </div>
+      <button id="start-btn" class="start-btn primary">开始你的CEO生涯</button>
+      <button id="continue-btn" class="start-btn secondary hidden">继续上次的游戏</button>
+      <div class="start-tips">
+        基于达利欧《原则》管理思想 · 20+危机事件 · 6位性格各异的员工<br>
+        你的决策将接受"达利欧指数"评估<br><br>
+        <strong style="color: #FFD700; font-size: 0.9rem;">⚠️ 游戏规则：</strong><br>
+        <span style="color: #ff4444; font-weight: 600;">• 每月固定支出：资金 -5（房租、工资、运营成本）</span><br>
+        <span style="color: #8899aa;">• 任何一项指标归零，公司立即破产</span><br>
+        <span style="color: #8899aa;">• 初始资金50，通过明智决策让公司存活12个月</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 游戏主画面 ====== -->
+  <div id="game-screen" class="game-screen hidden">
+    <!-- 顶部仪表盘 -->
+    <div class="dashboard">
+      <div class="dash-top">
+        <span id="company-title" class="company-title">公司名</span>
+        <div class="dash-top-right">
+          <span id="week-display" class="week-display">第 1 / 12 月</span>
+          <div class="god-mode-wrapper">
+            <button id="god-mode-btn" class="god-mode-btn" onclick="gameUI.toggleGodMode()" title="上帝视角：显示选项的数值效果">👁️</button>
+            <div class="god-mode-tooltip">
+              <span class="tooltip-icon" onclick="gameUI.toggleTooltip()">?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="week-bar">
+        <div id="week-progress" class="week-progress" style="width:2%"></div>
+      </div>
+      <div id="stats-bars" class="stats-bars"></div>
+    </div>
+
+    <!-- 左侧员工面板 -->
+    <div class="employee-panel">
+      <div class="panel-title">管理团队</div>
+      <div id="employee-list"></div>
+    </div>
+
+    <!-- 中央事件面板 -->
+    <div class="event-panel-wrapper">
+      <div id="event-panel"></div>
+    </div>
+
+    <!-- 底部新闻条 -->
+    <div class="news-bar">
+      <span class="news-label">公司快讯 ▶</span>
+      <span id="news-ticker" class="news-ticker"></span>
+    </div>
+  </div>
+
+  <!-- ====== 结局画面 ====== -->
+  <div id="ending-screen" class="ending-screen hidden">
+    <div class="ending-hero">
+      <span id="ending-emoji" class="ending-emoji"></span>
+      <h1 id="ending-title" class="ending-title"></h1>
+      <p id="ending-subtitle" class="ending-subtitle"></p>
+      <p id="ending-description" class="ending-description"></p>
+      <p id="ending-week" class="ending-week"></p>
+    </div>
+
+    <div class="dalio-report">
+      <!-- 老板类型 -->
+      <div class="report-section">
+        <h3>📋 达利欧评估报告 · 你是什么类型的老板？</h3>
+        <div id="boss-type" class="boss-type"></div>
+      </div>
+
+      <!-- 六维原则评分 -->
+      <div class="report-section">
+        <h3>📊 达利欧六维原则得分</h3>
+        <div id="dalio-radar"></div>
+      </div>
+
+      <!-- 决策历史 -->
+      <div class="report-section">
+        <h3>📜 决策历史回顾</h3>
+        <div id="decision-history" class="history-list"></div>
+      </div>
+    </div>
+
+    <button id="restart-btn" class="start-btn primary" style="max-width:400px">再来一局</button>
+  </div>
+
+  <!-- 提示框遮罩和内容 -->
+  <div id="tooltip-overlay" class="tooltip-overlay" onclick="gameUI.toggleTooltip()"></div>
+  <div id="tooltip-content" class="tooltip-content">
+    <button class="close-tooltip" onclick="gameUI.toggleTooltip()">×</button>
+    <strong>👁️ 上帝视角</strong>
+    开启后可以看到每个选项的具体数值变化（资金±X、士气±X等），帮助你做出更明智的决策。<br><br>
+    关闭状态下只能看到"原则标签"，无法预知选择的好坏，增加游戏的不确定性和挑战性。
+  </div>
+
+  <!-- 脚本加载顺序 -->
+  <script src="events.js"></script>
+  <script src="game.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
